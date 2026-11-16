@@ -34,6 +34,9 @@ const RESOURCES = [
   { group: "Guides", id: "res-wp-guide", tag: "In progress", title: "AIP Work Permit Guide",
     desc: "Step-by-step community guide to the AIP work permit.", gdoc: "1f0PJof9dz6Kk0lFj6KCNZFI00cgXm9rhN2PBHky-NoU",
     keys: "work permit guide c18 how to" },
+  { group: "Guides", title: "Settle in Canada FAQ (eCOPR)", tag: "Inland",
+    desc: "Community FAQ on eCOPR and virtual landing for applicants already in Canada.", url: "https://settleincanada.netlify.app/faq",
+    keys: "ecopr virtual landing portal 1 portal 2 inland pr card faq" },
   { group: "Official IRCC pages", title: "Atlantic Immigration Program",
     desc: "Eligibility, designated employers and how to apply.", url: `${IRCC}/services/immigrate-canada/atlantic-immigration.html`,
     keys: "official eligibility apply" },
@@ -230,10 +233,12 @@ if ("IntersectionObserver" in window) {
 }
 
 /* ---------- Journey map ---------- */
-// General stages of the AIP PR route. Exact order of medicals/biometrics can vary; always follow IRCC's letters.
+// General stages of the AIP PR route. Order of medicals/biometrics can vary; always follow IRCC's letters.
+// The last stages differ: applicants inside Canada land virtually (Portal 1, Portal 2, eCOPR).
 const AIP = `${IRCC}/services/immigrate-canada/atlantic-immigration.html`;
 const STATUS = `${IRCC}/services/application/check-status.html`;
-const STAGES = [
+const FAQ = "https://settleincanada.netlify.app/faq";
+const COMMON = [
   { short: "Job offer", title: "Job offer from a designated employer",
     text: "Your offer must come from an employer designated by an Atlantic province.",
     links: [["Official AIP page", AIP]] },
@@ -242,7 +247,7 @@ const STAGES = [
     links: [["Official AIP page", AIP], ["If your job changes", "#job-change"]] },
   { short: "Work permit", title: "C18 work permit (if you need one)",
     text: "Some applicants get a C18 work permit to start working while PR is processed. Use a valid language test.",
-    links: [["C18 rules", "#res-c18-tracker"], ["Work Permit Guide", "#res-wp-guide"]] },
+    links: [["C18 tracker", "#res-c18-tracker"], ["Work Permit Guide", "#res-wp-guide"]] },
   { short: "Apply for PR", title: "Submit your PR application",
     text: "You apply online for permanent residence with your endorsement and documents.",
     links: [["Official AIP page", AIP]] },
@@ -252,20 +257,42 @@ const STAGES = [
   { short: "Medicals & biometrics", title: "Medical exam and biometrics",
     text: "IRCC asks for your medical exam and biometrics. The order can vary, so follow the letters you receive.",
     links: [["Medical exams", `${IRCC}/services/application/medical-police/medical-exams.html`], ["Check status", STATUS]] },
-  { short: "PPR", title: "Final steps (PPR / portal)",
+  { short: "PPR", title: "Final steps (PPR)",
     text: "IRCC asks for final details and documents before confirming your PR.",
     links: [["Check status", STATUS], ["Contact IRCC", `${IRCC}/corporate/contact-ircc/web-form.html`]] },
-  { short: "COPR & landing", title: "Confirmation of PR and landing",
-    text: "You receive your Confirmation of Permanent Residence and complete landing. Welcome!",
-    links: [["Official AIP page", AIP], ["Ask the group", "#community"]] },
 ];
-const stopsEl = $("#stops"), card = $("#stage-card"), done = $("#route-done");
-stopsEl.innerHTML = STAGES.map((s, i) =>
-  `<li><button class="stop" role="radio" aria-checked="false" data-i="${i}"><span class="dot"></span>${esc(s.short)}</button></li>`).join("");
+const ENDINGS = {
+  inland: [
+    { short: "Portal 1 & 2", title: "PR portal: Portal 1 and Portal 2",
+      text: "Inside Canada, you land virtually. In Portal 1 you confirm you are in Canada; in Portal 2 you send your photo and address.",
+      links: [["eCOPR FAQ", FAQ], ["Ask the group", "#community"]] },
+    { short: "eCOPR", title: "eCOPR: you are a permanent resident",
+      text: "Your electronic Confirmation of Permanent Residence arrives in the portal. That is your virtual landing. Welcome!",
+      links: [["eCOPR FAQ", FAQ], ["Ask the group", "#community"]] },
+  ],
+  outland: [
+    { short: "COPR & landing", title: "Confirmation of PR and landing",
+      text: "Outside Canada, you receive your COPR and complete landing when you arrive at a port of entry. Welcome!",
+      links: [["Official AIP page", AIP], ["Ask the group", "#community"]] },
+  ],
+};
+const stopsEl = $("#stops"), card = $("#stage-card"), done = $("#route-done"), routeEl = $("#route");
+let where = store.get("where") === "outland" ? "outland" : "inland";
+let STAGES = [], stage = null;
 const len = done.getTotalLength ? done.getTotalLength() : 1200;
 done.style.setProperty("--len", len); done.style.setProperty("--off", len);
 const linkHtml = (ls) => `<p class="stage-links">${ls.map(([t, h]) => `<a href="${h}"${ext(h)}>${esc(t)}</a>`).join("")}</p>`;
+
+function buildRoute() {
+  STAGES = [...COMMON, ...ENDINGS[where]];
+  routeEl.style.setProperty("--n", STAGES.length);
+  stopsEl.innerHTML = STAGES.map((s, i) =>
+    `<li><button class="stop" role="radio" aria-checked="false" tabindex="-1" data-i="${i}"><span class="dot"></span>${esc(s.short)}</button></li>`).join("");
+  if (stage !== null) setStage(Math.min(stage, STAGES.length - 1), false);
+  else { card.innerHTML = ""; $(".stop", stopsEl).tabIndex = 0; }
+}
 function setStage(i, save = true) {
+  stage = i;
   $$(".stop", stopsEl).forEach((b, j) => {
     b.setAttribute("aria-checked", j === i); b.tabIndex = j === i ? 0 : -1; b.classList.toggle("done", j < i);
   });
@@ -284,6 +311,12 @@ stopsEl.addEventListener("keydown", (e) => {
   const cur = +document.activeElement.dataset.i, next = Math.max(0, Math.min(STAGES.length - 1, cur + (e.key === "ArrowRight" ? 1 : -1)));
   e.preventDefault(); setStage(next); $$(".stop", stopsEl)[next].focus();
 });
+$$('input[name="where"]').forEach((r) => {
+  r.checked = r.value === where;
+  r.addEventListener("change", () => { where = r.value; store.set("where", where); buildRoute(); });
+});
 const savedStage = store.get("stage");
-if (savedStage !== null) setStage(+savedStage, false); else $(".stop", stopsEl).tabIndex = 0;
-SECTIONS.push({ title: "Your AIP journey", desc: "Pick your stage and see what's next", href: "#journey", keys: "journey stage next step route where am i aor ppr copr landing" });
+if (savedStage !== null) stage = +savedStage;
+buildRoute();
+SECTIONS.push({ title: "Your AIP journey", desc: "Pick your stage and see what's next", href: "#journey",
+  keys: "journey stage next step route where am i aor ppr copr ecopr portal 1 portal 2 landing inland outland" });

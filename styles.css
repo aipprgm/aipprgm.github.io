@@ -190,11 +190,11 @@ dialog::backdrop { background: rgba(20, 26, 28, .45); }
 .journey-head .hint { margin: 0 0 14px; }
 .route { position: relative; overflow-x: auto; scroll-snap-type: x mandatory; scrollbar-width: none; padding: 4px 0 10px; }
 .route::-webkit-scrollbar { display: none; }
-.route-line { position: absolute; left: 0; top: 12px; width: max(100%, 860px); height: 44px; overflow: visible; }
+.route-line { position: absolute; left: 0; top: 12px; width: max(100%, calc(var(--n, 8) * 108px)); height: 44px; overflow: visible; }
 .route-shore { stroke: var(--sand); stroke-width: 10; opacity: .9; }
 .route-path { stroke: var(--line); stroke-width: 2.5; stroke-dasharray: 2 8; }
 .route-done { stroke: var(--spruce); stroke-width: 3; stroke-dasharray: var(--len, 1200); stroke-dashoffset: var(--off, 1200); transition: stroke-dashoffset .9s cubic-bezier(.6,0,.2,1); }
-.stops { position: relative; list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(8, minmax(96px, 1fr)); min-width: 860px; }
+.stops { position: relative; list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(var(--n, 8), minmax(96px, 1fr)); min-width: calc(var(--n, 8) * 108px); }
 .stops li { scroll-snap-align: center; display: flex; justify-content: center; }
 .stop {
   display: flex; flex-direction: column; align-items: center; gap: 8px; background: none; border: 0; padding: 4px 2px;
@@ -230,3 +230,12 @@ dialog::backdrop { background: rgba(20, 26, 28, .45); }
 @keyframes rise { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
 @media (max-width: 640px) { .stage-card { grid-template-columns: 1fr; } }
 @media (prefers-reduced-motion: reduce) { .stop[aria-checked="true"] .dot { animation: none; } }
+
+.sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+.journey-head { display: flex; flex-wrap: wrap; align-items: end; justify-content: space-between; gap: 4px 16px; }
+.journey-head > h2, .journey-head > .hint { flex-basis: 100%; }
+.where { display: inline-flex; border: 1px solid var(--line); border-radius: 6px; padding: 3px; margin: 0 0 14px; background: var(--surface); }
+.where label { position: relative; padding: 6px 14px; border-radius: 4px; font-size: .9rem; cursor: pointer; color: var(--muted); }
+.where input { position: absolute; opacity: 0; inset: 0; cursor: pointer; }
+.where label:has(input:checked) { background: var(--spruce); color: var(--paper); font-weight: 600; }
+.where label:has(input:focus-visible) { outline: 3px solid var(--harbour); outline-offset: 2px; }
