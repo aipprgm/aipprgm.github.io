@@ -17,8 +17,8 @@ const RESOURCES = [
   },
   {
     type: "sheet", icon: "📈", badge: "New",
-    title: "AIP data sheet (new)",
-    text: "The newest community spreadsheet. Open it online or download it as Excel.",
+    title: "AIP C18 restoration / reconsideration SOWP tracker",
+    text: "Community tracker for C18 work permit restoration and reconsideration cases, and spousal open work permits (SOWP).",
     gsheet: "1ejD3q611FMy7XxIAktmnq83-FH3eX2OSwlhWTzB-aTE",
   },
   {
