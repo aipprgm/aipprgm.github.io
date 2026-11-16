@@ -13,7 +13,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Literata:opsz,wght@7..72,500;7..72,600&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="styles.css?v=3">
+  <link rel="stylesheet" href="styles.css?v=4">
 </head>
 <body>
   <a class="skip" href="#main">Skip to content</a>
@@ -45,6 +45,23 @@
       <p class="kicker">Atlantic Immigration Program</p>
       <h1>Help for AIP applicants, from people going through it too.</h1>
       <p class="lede">Run by members of the AIP applicants group. Start with what you need below, or search the site.</p>
+    </section>
+
+    <!-- Journey map: pick your stage, see what's next -->
+    <section class="wrap journey" id="journey" aria-labelledby="journey-title">
+      <div class="journey-head">
+        <h2 id="journey-title">Where are you on the route?</h2>
+        <p class="hint">Tap your current stage. We'll remember it on this device.</p>
+      </div>
+      <div class="route" id="route" role="radiogroup" aria-labelledby="journey-title">
+        <svg class="route-line" viewBox="0 0 1000 60" preserveAspectRatio="none" aria-hidden="true">
+          <path class="route-shore" d="M0,52 C80,40 140,58 220,46 S380,30 470,44 S640,58 720,42 S880,30 1000,46"/>
+          <path class="route-path" id="route-path" d="M0,30 C80,10 160,50 250,30 S420,10 500,30 S670,50 750,30 S920,10 1000,30"/>
+          <path class="route-done" id="route-done" d="M0,30 C80,10 160,50 250,30 S420,10 500,30 S670,50 750,30 S920,10 1000,30"/>
+        </svg>
+        <ol class="stops" id="stops"></ol>
+      </div>
+      <div class="stage-card" id="stage-card" aria-live="polite"></div>
     </section>
 
     <!-- Start here: top tasks, ordered by how often the group asks about them -->
@@ -166,6 +183,6 @@
     <iframe id="preview-frame" title="Document preview"></iframe>
   </dialog>
 
-  <script src="app.js?v=3"></script>
+  <script src="app.js?v=4"></script>
 </body>
 </html>

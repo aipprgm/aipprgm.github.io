@@ -228,3 +228,62 @@ if ("IntersectionObserver" in window) {
   }), { rootMargin: "-40% 0px -55% 0px" });
   navMap.forEach((_, id) => { const el = document.getElementById(id); if (el) io.observe(el); });
 }
+
+/* ---------- Journey map ---------- */
+// General stages of the AIP PR route. Exact order of medicals/biometrics can vary; always follow IRCC's letters.
+const AIP = `${IRCC}/services/immigrate-canada/atlantic-immigration.html`;
+const STATUS = `${IRCC}/services/application/check-status.html`;
+const STAGES = [
+  { short: "Job offer", title: "Job offer from a designated employer",
+    text: "Your offer must come from an employer designated by an Atlantic province.",
+    links: [["Official AIP page", AIP]] },
+  { short: "Endorsement", title: "Provincial endorsement",
+    text: "Your employer works with the province to endorse your job offer.",
+    links: [["Official AIP page", AIP], ["If your job changes", "#job-change"]] },
+  { short: "Work permit", title: "C18 work permit (if you need one)",
+    text: "Some applicants get a C18 work permit to start working while PR is processed. Use a valid language test.",
+    links: [["C18 rules", "#res-c18-tracker"], ["Work Permit Guide", "#res-wp-guide"]] },
+  { short: "Apply for PR", title: "Submit your PR application",
+    text: "You apply online for permanent residence with your endorsement and documents.",
+    links: [["Official AIP page", AIP]] },
+  { short: "AOR", title: "Acknowledgement of receipt (AOR)",
+    text: "IRCC confirms it received your application. Compare your dates with others in the data sheet.",
+    links: [["AIP data sheet", "#res-aip-sheet"], ["Processing times", `${IRCC}/services/application/check-processing-times.html`]] },
+  { short: "Medicals & biometrics", title: "Medical exam and biometrics",
+    text: "IRCC asks for your medical exam and biometrics. The order can vary, so follow the letters you receive.",
+    links: [["Medical exams", `${IRCC}/services/application/medical-police/medical-exams.html`], ["Check status", STATUS]] },
+  { short: "PPR", title: "Final steps (PPR / portal)",
+    text: "IRCC asks for final details and documents before confirming your PR.",
+    links: [["Check status", STATUS], ["Contact IRCC", `${IRCC}/corporate/contact-ircc/web-form.html`]] },
+  { short: "COPR & landing", title: "Confirmation of PR and landing",
+    text: "You receive your Confirmation of Permanent Residence and complete landing. Welcome!",
+    links: [["Official AIP page", AIP], ["Ask the group", "#community"]] },
+];
+const stopsEl = $("#stops"), card = $("#stage-card"), done = $("#route-done");
+stopsEl.innerHTML = STAGES.map((s, i) =>
+  `<li><button class="stop" role="radio" aria-checked="false" data-i="${i}"><span class="dot"></span>${esc(s.short)}</button></li>`).join("");
+const len = done.getTotalLength ? done.getTotalLength() : 1200;
+done.style.setProperty("--len", len); done.style.setProperty("--off", len);
+const linkHtml = (ls) => `<p class="stage-links">${ls.map(([t, h]) => `<a href="${h}"${ext(h)}>${esc(t)}</a>`).join("")}</p>`;
+function setStage(i, save = true) {
+  $$(".stop", stopsEl).forEach((b, j) => {
+    b.setAttribute("aria-checked", j === i); b.tabIndex = j === i ? 0 : -1; b.classList.toggle("done", j < i);
+  });
+  done.style.setProperty("--off", len * (1 - (i + 0.5) / STAGES.length));
+  const s = STAGES[i], n = STAGES[i + 1];
+  card.classList.remove("swap"); void card.offsetWidth; card.classList.add("swap");
+  card.innerHTML = `<div><p class="label">You are here · ${i + 1} of ${STAGES.length}</p><h3>${esc(s.title)}</h3><p>${esc(s.text)}</p>${linkHtml(s.links)}</div>` +
+    (n ? `<div class="next"><p class="label">Up next</p><h3>${esc(n.title)}</h3><p>${esc(n.text)}</p>${linkHtml(n.links)}</div>`
+       : `<div class="next"><p class="label">Done</p><h3>You made it</h3><p>Share your timeline in the data sheet to help the next applicant.</p>${linkHtml([["AIP data sheet", "#res-aip-sheet"]])}</div>`);
+  if (save) store.set("stage", i);
+  $$(".stop", stopsEl)[i].scrollIntoView({ block: "nearest", inline: "center", behavior: save ? "smooth" : "auto" });
+}
+stopsEl.addEventListener("click", (e) => { const b = e.target.closest(".stop"); if (b) setStage(+b.dataset.i); });
+stopsEl.addEventListener("keydown", (e) => {
+  if (!["ArrowRight", "ArrowLeft"].includes(e.key)) return;
+  const cur = +document.activeElement.dataset.i, next = Math.max(0, Math.min(STAGES.length - 1, cur + (e.key === "ArrowRight" ? 1 : -1)));
+  e.preventDefault(); setStage(next); $$(".stop", stopsEl)[next].focus();
+});
+const savedStage = store.get("stage");
+if (savedStage !== null) setStage(+savedStage, false); else $(".stop", stopsEl).tabIndex = 0;
+SECTIONS.push({ title: "Your AIP journey", desc: "Pick your stage and see what's next", href: "#journey", keys: "journey stage next step route where am i aor ppr copr landing" });
