@@ -4,190 +4,166 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>AIP Applicant Hub</title>
-  <meta name="description" content="A community hub for Atlantic Immigration Program (AIP) applicants: guides, data sheets, documents and IRCC updates.">
+  <meta name="description" content="Help for Atlantic Immigration Program (AIP) applicants, from people going through it too: timelines, work permits, job changes, sheets and official IRCC links.">
   <meta property="og:title" content="AIP Applicant Hub">
-  <meta property="og:description" content="Guides, data sheets, documents and IRCC updates for Atlantic Immigration Program applicants.">
-  <meta name="theme-color" content="#0b2540">
-  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>⚡</text></svg>">
+  <meta property="og:description" content="Timelines, work permits, job changes, community sheets and official IRCC links for AIP applicants.">
+  <meta name="theme-color" content="#f6f4ee" media="(prefers-color-scheme: light)">
+  <meta name="theme-color" content="#161c1f" media="(prefers-color-scheme: dark)">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='6' fill='%232f5d50'/><path d='M4 22c4-3 8 3 12 0s8 3 12 0' stroke='%23f6f4ee' stroke-width='2.5' fill='none'/></svg>">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Literata:opsz,wght@7..72,500;7..72,600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
   <a class="skip" href="#main">Skip to content</a>
 
-  <header class="topbar">
-    <nav class="nav wrap" aria-label="Main">
-      <a class="brand" href="#top"><span aria-hidden="true">⚡</span> AIP Hub</a>
-      <button class="menu-btn" aria-expanded="false" aria-controls="nav-links" aria-label="Open menu">
-        <span></span><span></span><span></span>
+  <header class="site-header">
+    <div class="wrap header-row">
+      <a class="brand" href="#top">
+        <svg viewBox="0 0 32 32" aria-hidden="true"><path d="M3 21c4-3 9 3 13 0s9 3 13 0"/><path d="M3 26c4-3 9 3 13 0s9 3 13 0"/></svg>
+        AIP Applicant Hub
+      </a>
+      <nav aria-label="Sections">
+        <ul class="nav-links">
+          <li><a href="#start">Start here</a></li>
+          <li><a href="#job-change">Job changes</a></li>
+          <li><a href="#resources">Sheets &amp; guides</a></li>
+          <li><a href="#files">Files</a></li>
+          <li><a href="#community">Group</a></li>
+        </ul>
+      </nav>
+      <button class="search-btn" id="open-search" aria-label="Search the site" aria-keyshortcuts="/">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-4-4"/></svg>
+        <span>Search</span><kbd>/</kbd>
       </button>
-      <ul id="nav-links" class="nav-links">
-        <li><a href="#alerts">Alerts</a></li>
-        <li><a href="#job-change">Job changes</a></li>
-        <li><a href="#resources">Resources</a></li>
-        <li><a href="#files">Files</a></li>
-        <li><a href="#community" class="nav-cta">Join the group</a></li>
-      </ul>
-    </nav>
+    </div>
   </header>
 
   <main id="main">
-    <!-- Hero -->
-    <section class="hero" id="top">
-      <div class="beam" aria-hidden="true"></div>
-      <div class="wrap hero-inner">
-        <p class="eyebrow">Atlantic Immigration Program · Community hub</p>
-        <h1>Navigate your AIP journey <em>together.</em></h1>
-        <p class="lede">
-          A collaborative space to help every AIP applicant through the application process.
-          Guides, live data sheets, documents and the IRCC updates that matter, all in one place.
-        </p>
-        <div class="hero-actions">
-          <a class="btn btn-primary" href="#resources">Browse resources</a>
-          <a class="btn btn-ghost" href="#job-change">Job changed? Start here</a>
-        </div>
-        <ul class="stats" aria-label="At a glance">
-          <li><strong>90</strong><span>days to report job changes</span></li>
-          <li><strong id="stat-resources">6</strong><span>curated resources</span></li>
-          <li><strong>24/7</strong><span>community support</span></li>
-        </ul>
-      </div>
-      <svg class="waves" viewBox="0 0 1440 120" preserveAspectRatio="none" aria-hidden="true">
-        <path d="M0,64 C240,112 480,16 720,48 C960,80 1200,112 1440,56 L1440,120 L0,120 Z"></path>
-      </svg>
+    <section class="intro wrap" id="top">
+      <p class="kicker">Atlantic Immigration Program</p>
+      <h1>Help for AIP applicants, from people going through it too.</h1>
+      <p class="lede">Run by members of the AIP applicants group. Start with what you need below, or search the site.</p>
     </section>
 
-    <!-- Alerts -->
-    <section id="alerts" class="section wrap">
-      <div class="alert" role="note">
-        <div class="alert-icon" aria-hidden="true">!</div>
-        <div>
-          <h2>Apply or renew your C18 work permit with a valid language test</h2>
-          <p>Don't risk it. Make sure your language test results are valid before you apply for or renew a C18 (AIP) work permit.</p>
-          <a class="link-arrow" href="https://www.canada.ca/en/immigration-refugees-citizenship/corporate/publications-manuals/operational-bulletins-manuals/temporary-residents/foreign-workers/special-initiatives-pilot-project/exemption-code-c18.html#s2.2.1" target="_blank" rel="noopener">Read the IRCC C18 instructions</a>
-        </div>
-      </div>
+    <!-- Start here: top tasks, ordered by how often the group asks about them -->
+    <section class="wrap" id="start" aria-labelledby="start-title">
+      <h2 id="start-title" class="section-title">What do you need?</h2>
+      <ol class="tasks" id="tasks"></ol>
     </section>
 
-    <!-- Job change tool -->
-    <section id="job-change" class="section wrap">
-      <header class="section-head">
-        <p class="eyebrow">Change of employment during your application</p>
-        <h2>Your job changed. Here's what to send, and by when.</h2>
-        <p>
-          Under new IRCC instructions, if your <strong>employer</strong>, <strong>job role</strong> or
-          <strong>employer ownership</strong> changes, you must submit an amended endorsement and supporting
-          documents <strong>within 90 days</strong>. If you don't, your PR application will be refused.
-          Previously, files were just put on hold.
-        </p>
-      </header>
+    <section class="wrap" aria-label="Important notice">
+      <aside class="notice">
+        <h2>Apply for or renew your C18 work permit with a valid language test.</h2>
+        <p>Don't risk it. Check your test results are still valid before you apply.</p>
+        <p class="source">Source: <a href="https://www.canada.ca/en/immigration-refugees-citizenship/corporate/publications-manuals/operational-bulletins-manuals/temporary-residents/foreign-workers/special-initiatives-pilot-project/exemption-code-c18.html#s2.2.1" target="_blank" rel="noopener">IRCC, exemption code C18</a> · Shared in the group, Nov 2026</p>
+      </aside>
+    </section>
+
+    <!-- Job change -->
+    <section class="wrap section" id="job-change" aria-labelledby="job-title">
+      <h2 id="job-title" class="section-title">Your job or employer changed</h2>
+      <p class="measure">
+        If your employer, job role or employer ownership changes during your PR application, IRCC now asks you to
+        send an amended endorsement and other documents <strong>within 90 days</strong>. If you don't, your application
+        will be refused. Before this change, files were put on hold.
+      </p>
+      <p class="source">Source: <a href="https://www.canada.ca/en/immigration-refugees-citizenship/corporate/publications-manuals/operational-bulletins-manuals/permanent-residence/economic-classes/atlantic-immigration-program/other.html" target="_blank" rel="noopener">IRCC, AIP: other situations</a> · Shared in the group, Nov 2026</p>
 
       <div class="tool">
-        <div class="tool-panel">
-          <h3>1. What changed?</h3>
-          <div class="tabs" role="tablist" aria-label="Type of change">
-            <button role="tab" id="tab-same" aria-selected="true" aria-controls="panel-same">Same employer, new role or terms</button>
-            <button role="tab" id="tab-new" aria-selected="false" aria-controls="panel-new" tabindex="-1">Different designated employer</button>
-          </div>
-
-          <div role="tabpanel" id="panel-same" aria-labelledby="tab-same" class="checklist" data-key="same">
-            <p class="muted">Documents IRCC asks for when your role or employment terms change with the same employer:</p>
-            <label><input type="checkbox" data-item="same-1"> Updated provincial endorsement certificate</label>
-            <label><input type="checkbox" data-item="same-2"> Updated Offer of Employment form (IMM 0157)</label>
-          </div>
-          <div role="tabpanel" id="panel-new" aria-labelledby="tab-new" class="checklist" data-key="new" hidden>
-            <p class="muted">Documents IRCC asks for when you move to a different designated employer. Submit these <strong>immediately</strong>:</p>
-            <label><input type="checkbox" data-item="new-1"> Updated endorsement certificate</label>
-            <label><input type="checkbox" data-item="new-2"> Updated Offer of Employment form (IMM 0157) from the new employer</label>
-          </div>
-          <p class="progress" aria-live="polite"><span id="progress-text">0 of 2 ready</span></p>
-          <a class="link-arrow" href="https://www.canada.ca/en/immigration-refugees-citizenship/corporate/publications-manuals/operational-bulletins-manuals/permanent-residence/economic-classes/atlantic-immigration-program/other.html" target="_blank" rel="noopener">IRCC: if your job changes or your company is sold</a>
+        <div class="panel">
+          <h3>Documents to send</h3>
+          <fieldset class="choice">
+            <legend>What changed?</legend>
+            <label><input type="radio" name="change" value="same" checked> Same employer, new role or terms</label>
+            <label><input type="radio" name="change" value="new"> Moved to a different designated employer</label>
+          </fieldset>
+          <ul class="checklist" data-key="same">
+            <li><label><input type="checkbox" data-item="same-1"> Updated provincial endorsement certificate</label></li>
+            <li><label><input type="checkbox" data-item="same-2"> Updated Offer of Employment form (IMM 0157)</label></li>
+          </ul>
+          <ul class="checklist" data-key="new" hidden>
+            <li><label><input type="checkbox" data-item="new-1"> Updated endorsement certificate</label></li>
+            <li><label><input type="checkbox" data-item="new-2"> Updated Offer of Employment form (IMM 0157) from the new employer</label></li>
+          </ul>
+          <p class="hint" id="new-hint" hidden>Send these immediately after you move.</p>
+          <p class="progress" id="progress-text" aria-live="polite">0 of 2 ready</p>
         </div>
 
-        <div class="tool-panel deadline">
-          <h3>2. Work out your 90-day deadline</h3>
+        <div class="panel">
+          <h3>Your 90-day deadline</h3>
           <label for="change-date" class="field-label">Date the change happened</label>
           <input type="date" id="change-date">
-          <div class="countdown" id="countdown" aria-live="polite">
-            <div class="ring" aria-hidden="true"><svg viewBox="0 0 120 120"><circle cx="60" cy="60" r="52" class="ring-bg"/><circle cx="60" cy="60" r="52" class="ring-fg" id="ring-fg"/></svg><span id="days-left">–</span></div>
-            <div>
-              <p class="deadline-label">Submit by</p>
-              <p class="deadline-date" id="deadline-date">Pick a date</p>
-              <p class="muted small" id="deadline-note">Counted as 90 calendar days. Confirm your exact deadline with IRCC.</p>
-            </div>
+          <div class="deadline" id="deadline" aria-live="polite">
+            <p class="deadline-date" id="deadline-date">Pick a date to see your deadline.</p>
+            <div class="bar" aria-hidden="true"><span id="bar-fill"></span></div>
+            <p class="hint" id="deadline-note">Counted as 90 calendar days. Confirm your exact deadline with IRCC.</p>
           </div>
         </div>
       </div>
     </section>
 
     <!-- Resources -->
-    <section id="resources" class="section wrap">
-      <header class="section-head row">
-        <div>
-          <p class="eyebrow">Resources</p>
-          <h2>Guides, data sheets and official pages</h2>
-        </div>
-        <div class="filters">
-          <input type="search" id="search" placeholder="Search resources" aria-label="Search resources">
-          <div class="chips" role="group" aria-label="Filter by type">
-            <button class="chip active" data-filter="all">All</button>
-            <button class="chip" data-filter="sheet">Sheets</button>
-            <button class="chip" data-filter="doc">Guides</button>
-            <button class="chip" data-filter="ircc">IRCC</button>
-          </div>
-        </div>
-      </header>
-      <div class="cards" id="cards"></div>
-      <p class="empty" id="cards-empty" hidden>No resources match your search.</p>
+    <section class="wrap section" id="resources" aria-labelledby="res-title">
+      <h2 id="res-title" class="section-title">Sheets &amp; guides</h2>
+      <div class="res-groups" id="res-groups"></div>
     </section>
 
     <!-- Files -->
-    <section id="files" class="section wrap">
-      <header class="section-head">
-        <p class="eyebrow">Files</p>
-        <h2>PDFs and downloads</h2>
-        <p>Any PDF added to this site's <code>files</code> folder shows up here automatically.</p>
-      </header>
-      <ul class="file-list" id="file-list"><li class="muted">Loading files…</li></ul>
+    <section class="wrap section" id="files" aria-labelledby="files-title">
+      <h2 id="files-title" class="section-title">Files</h2>
+      <p class="hint">PDFs and documents shared by the group.</p>
+      <ul class="rows" id="file-list"><li class="row muted">Loading files…</li></ul>
     </section>
 
     <!-- Community -->
-    <section id="community" class="section wrap">
-      <div class="community">
-        <div>
-          <p class="eyebrow light">Community</p>
-          <h2>Ask anything. Someone will respond.</h2>
-          <p>
-            This group was created with a collaborative environment in mind. Our goal is to help all AIP
-            applicants navigate their way through the application process. Feel free to ask any question
-            and someone will respond. You can also ping an admin if it's extremely critical.
-          </p>
-          <p class="fun">Have fun. ⚡️⚡️</p>
-        </div>
-        <a class="btn btn-whatsapp" href="https://chat.whatsapp.com/HUUHgqX3og7Iy5xysg3gXu" target="_blank" rel="noopener">
-          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2Zm5.3 14.2c-.2.6-1.3 1.2-1.8 1.2-.5.1-1 .2-3.3-.7-2.8-1.1-4.5-3.9-4.7-4.1-.1-.2-1.1-1.5-1.1-2.9s.7-2 1-2.3c.2-.3.5-.3.7-.3h.5c.2 0 .4 0 .6.5l.8 2c.1.2.1.4 0 .5l-.3.5-.4.4c-.1.2-.3.3-.1.6.2.3.8 1.3 1.7 2.1 1.2 1 2.1 1.3 2.4 1.5.3.1.5.1.6-.1l.9-1c.2-.3.4-.2.7-.1l1.9.9c.3.1.5.2.5.3.1.2.1.7-.1 1.3Z"/></svg>
-          Join the WhatsApp group
-        </a>
+    <section class="wrap section" id="community" aria-labelledby="group-title">
+      <div class="group">
+        <h2 id="group-title">Ask the group</h2>
+        <p class="measure">
+          This group was created with a collaborative environment in mind. Our goal is to help all AIP applicants
+          through the application process. Ask any question and someone will respond. Ping an admin only if it's
+          extremely critical.
+        </p>
+        <p>Have fun. ⚡️⚡️</p>
+        <a class="button" href="https://chat.whatsapp.com/HUUHgqX3og7Iy5xysg3gXu" target="_blank" rel="noopener">Join the WhatsApp group</a>
       </div>
     </section>
   </main>
 
-  <footer class="footer wrap">
-    <p><strong>Not legal advice.</strong> This is a community resource run by applicants, not affiliated with IRCC or any province. Always confirm requirements on <a href="https://www.canada.ca/en/immigration-refugees-citizenship/services/immigrate-canada/atlantic-immigration.html" target="_blank" rel="noopener">canada.ca</a>.</p>
-    <button class="theme-toggle" id="theme-toggle" aria-label="Toggle dark mode">◐ Theme</button>
+  <footer class="site-footer wrap">
+    <p><strong>Not legal advice.</strong> A community resource run by applicants. Not affiliated with IRCC or any province. Always confirm on <a href="https://www.canada.ca/en/immigration-refugees-citizenship/services/immigrate-canada/atlantic-immigration.html" target="_blank" rel="noopener">canada.ca</a>.</p>
+    <p class="footer-links"><a href="#top">Back to top</a> · <button class="link-btn" id="theme-toggle">Switch theme</button></p>
   </footer>
 
-  <dialog id="preview" aria-labelledby="preview-title">
-    <div class="dialog-bar">
-      <h3 id="preview-title">Preview</h3>
-      <div class="dialog-actions">
-        <a id="preview-open" class="btn btn-small" target="_blank" rel="noopener">Open in new tab</a>
-        <button class="btn btn-small btn-ghost-dark" id="preview-close" aria-label="Close preview">Close</button>
-      </div>
+  <!-- Mobile bottom bar -->
+  <nav class="bottom-bar" aria-label="Quick links">
+    <a href="#start"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 6h16M4 12h16M4 18h10"/></svg>Start</a>
+    <a href="#job-change"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="8"/><path d="M12 8v4l3 2"/></svg>Deadline</a>
+    <a href="#resources"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="4" width="16" height="16" rx="2"/><path d="M4 10h16M10 4v16"/></svg>Sheets</a>
+    <button id="open-search-m"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-4-4"/></svg>Search</button>
+    <a href="#community"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 5h16v11H9l-5 4z"/></svg>Group</a>
+  </nav>
+
+  <!-- Search -->
+  <dialog id="search" aria-label="Search the site">
+    <div class="search-box">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-4-4"/></svg>
+      <input type="search" id="search-input" placeholder="Try “medical”, “C18”, “timeline”…" aria-label="Search" autocomplete="off" aria-controls="search-results">
+      <button class="link-btn" id="search-close">Close</button>
     </div>
-    <iframe id="preview-frame" title="Document preview" loading="lazy"></iframe>
+    <ul id="search-results" class="search-results" role="listbox" aria-label="Results"></ul>
+  </dialog>
+
+  <!-- Preview -->
+  <dialog id="preview" aria-labelledby="preview-title">
+    <div class="preview-bar">
+      <h3 id="preview-title">Preview</h3>
+      <a id="preview-open" target="_blank" rel="noopener">Open in new tab</a>
+      <button class="link-btn" id="preview-close">Close</button>
+    </div>
+    <iframe id="preview-frame" title="Document preview"></iframe>
   </dialog>
 
   <script src="app.js"></script>
