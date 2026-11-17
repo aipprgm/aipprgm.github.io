@@ -60,7 +60,7 @@ svg { stroke: currentColor; fill: none; stroke-width: 2; stroke-linecap: round; 
 .brand { display: flex; align-items: center; gap: 10px; color: var(--ink); text-decoration: none; font: 600 1.05rem Literata, Georgia, serif; white-space: nowrap; }
 .brand svg { width: 26px; height: 26px; color: var(--spruce); }
 .nav-links { display: flex; gap: 4px; list-style: none; margin: 0; padding: 0; }
-.nav-links a { display: block; color: var(--muted); text-decoration: none; padding: 6px 10px; border-radius: 4px; font-size: .95rem; }
+.nav-links a { display: block; color: var(--muted); text-decoration: none; padding: 6px 9px; white-space: nowrap; border-radius: 4px; font-size: .95rem; }
 .nav-links a:hover { color: var(--ink); background: var(--sand); }
 .nav-links a.current { color: var(--ink); box-shadow: inset 0 -2px 0 var(--spruce); border-radius: 0; }
 .search-btn {
@@ -162,8 +162,11 @@ dialog::backdrop { background: rgba(20, 26, 28, .45); }
 
 /* Responsive */
 @media (max-width: 860px) {
-  .nav-links { display: none; }
   .tool { grid-template-columns: 1fr; }
+}
+/* Eight nav links need about 1000px; below that they move into the Menu panel. */
+@media (max-width: 1000px) {
+  .nav-links { display: none; }
 }
 @media (max-width: 640px) {
   body { font-size: 16px; padding-bottom: 68px; }
@@ -276,9 +279,13 @@ dialog::backdrop { background: rgba(20, 26, 28, .45); }
 .mobile-menu a { display: block; padding: 12px 4px; border-bottom: 1px solid var(--line); color: var(--ink); text-decoration: none; font-weight: 500; }
 .mobile-menu li:last-child a { border-bottom: 0; }
 .mobile-menu a.current { color: var(--spruce); }
-@media (max-width: 860px) {
+@media (max-width: 1000px) {
   .menu-btn { display: inline-flex; }
   .search-btn { min-height: 40px; }
+}
+@media (max-width: 380px) {
+  .menu-btn span { display: none; }
+  .brand { font-size: .95rem; }
 }
 @media (min-width: 861px) { .mobile-menu { display: none; } }
 
