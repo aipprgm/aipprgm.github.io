@@ -437,6 +437,41 @@ function irccMonth(appliedDay) {
   return { ...m, finish: m.left !== null && ir.updated ? ir.updated + Math.round(m.left * 30.44) : null };
 }
 
+// Your place in IRCC's queue: IRCC's people-ahead and months-left for one application month,
+// next to the group's progress for that month and which months are getting PALs this week.
+let queueBound = false;
+function renderQueue(st) {
+  const ir = st.ircc, box = $("#queue");
+  if (!ir || !Object.keys(ir.months).length) { box.hidden = true; return; }
+  const sel = $("#queue-month"), out = $("#queue-out");
+  const keys = Object.keys(ir.months).filter((k) => k >= "2024-01").sort();
+  const label = (k) => new Date(Date.UTC(+k.slice(0, 4), +k.slice(5) - 1)).toLocaleDateString("en-CA", { timeZone: "UTC", month: "long", year: "numeric" });
+  const keep = sel.value || store.get("queue-month") || keys[Math.max(0, keys.length - 13)];
+  sel.innerHTML = keys.map((k) => `<option value="${k}">${label(k)}</option>`).join("");
+  sel.value = keys.includes(keep) ? keep : keys[keys.length - 1];
+  function show() {
+    const k = sel.value, m = ir.months[k];
+    store.set("queue-month", k);
+    const c = st.cohorts.find((x) => `${x.year}-${String(x.month + 1).padStart(2, "0")}` === k);
+    const behind = m.ahead && ir.waiting ? Math.max(0, Math.min(100, Math.round((1 - m.ahead / ir.waiting) * 100))) : null;
+    const finish = m.left !== null && ir.updated ? ir.updated + Math.round(m.left * 30.44) : null;
+    const pal = st.moved.find((x) => x.stage === "PAL");
+    const facts = [
+      finish ? `IRCC: about ${m.left} months left as of ${fmtDay(ir.updated)}, so around ${fmtMonth(finish)}.` : "IRCC says it needs more time on applications from this month.",
+      ir.processing ? `IRCC's current AIP processing time is about ${ir.processing} months, with about ${ir.waiting.toLocaleString("en-CA")} people waiting.` : "",
+      c ? `In the group, ${c.n} members applied this month: ${Math.round((c.AOR / c.n) * 100)}% have their AOR, ${Math.round((c.PAL / c.n) * 100)}% their PAL and ${Math.round((c.eCOPR / c.n) * 100)}% their eCOPR.` : "Not enough members from this month in the data sheet yet.",
+      pal ? `This week, PALs went to members who applied ${fmtMonth(pal.from) === fmtMonth(pal.to) ? fmtMonth(pal.from) : `${fmtMonth(pal.from)} – ${fmtMonth(pal.to)}`}.` : "",
+    ].filter(Boolean);
+    out.innerHTML = `<p class="queue-big">${m.ahead ? `About ${m.ahead.toLocaleString("en-CA")} people ahead` : "Position not published"}</p>
+      ${behind !== null ? `<p class="hint">You're further along than about ${behind}% of the AIP queue.</p><div class="bar" aria-hidden="true"><span style="width:${behind}%"></span></div>` : ""}
+      <ul class="queue-facts">${facts.map((f) => `<li>${esc(f)}</li>`).join("")}</ul>
+      <p class="source">Source: <a href="${IRCC}/services/application/check-processing-times.html" target="_blank" rel="noopener">IRCC processing times</a> (Atlantic Immigration Program), and the group's data sheet.</p>`;
+  }
+  if (!queueBound) { queueBound = true; sel.addEventListener("change", show); }
+  show();
+  box.hidden = false;
+}
+
 let trackerBound = false;
 function renderTracker(st) {
   const base = () => $('input[name="est-base"]:checked').value;
@@ -491,11 +526,14 @@ function renderTracker(st) {
     $$("#cohorts tbody tr").forEach((tr) => tr.classList.toggle("mine", +tr.dataset.k === k));
   }
   estimate();
+  renderQueue(st);
   const time = new Date().toLocaleTimeString("en-CA", { hour: "numeric", minute: "2-digit" });
   $("#tracker-status").textContent = `Updated at ${time} · refreshes every 10 minutes while this page is open.`;
   $("#tracker-tools").hidden = false;
   $("#cohort-box").hidden = !st.cohorts.length;
 }
+SECTIONS.push({ title: "Your place in IRCC's queue", desc: "People ahead of you and months left, from IRCC", href: "#queue",
+  keys: "queue people ahead line position months left ircc processing time official 26 months waiting" });
 SECTIONS.push({ title: "Live tracker", desc: "Estimate your dates, see what moved this week and how your month is doing", href: "#tracker",
   keys: "tracker estimate estimator prediction when will i get aor pal fd ecopr how long cohort month this week moved progress" });
 
