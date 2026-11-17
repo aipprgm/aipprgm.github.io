@@ -353,6 +353,72 @@ document.addEventListener("keydown", (e) => { if (e.key === "Escape" && !menu.hi
 document.addEventListener("click", (e) => { if (!menu.hidden && !menu.contains(e.target) && !menuBtn.contains(e.target)) setMenu(false); });
 $$("a", menu).forEach((a) => { const id = a.getAttribute("href").slice(1); navMap.set(id, [...(navMap.get(id) || []), a]); });
 
+/* ---------- My document tracker (saved on this device) ---------- */
+const DOC_LISTS = {
+  c18: { label: "C18 first application", items: [
+    "Work Permit Support Letter (WPSL) from the province",
+    "Offer of employment number from my employer (starts with “A”)",
+    "Signed IMM 0156 undertaking",
+    "Education credentials (plus an ECA if I studied outside Canada)",
+    "Language test results less than 2 years old",
+    "Proof of work experience (letters of employment)",
+    "The above combined into one “Client information” PDF, 4 MB max",
+    "Passport valid for at least 2 more years",
+    "Digital photo",
+    "Current permit, if I'm in Canada",
+    "$155 fee ready (plus $85 for biometrics if asked)",
+  ] },
+  c18renew: { label: "C18 renewal", items: [
+    "New offer of employment number (employer pays the $230 fee again)",
+    "My AOR, if my endorsement certificate has expired",
+    "Passport valid for at least 2 more years",
+    "Updated WPSL and a new IMM 0156, only if I changed employer",
+    "$155 fee ready",
+  ] },
+  adr: { label: "ADR", items: [
+    "Updated Schedule A (IMM 5669), dates checked against my original",
+    "Employment reference letter on letterhead (duties, hours, wage, start date)",
+    "Pay stubs for the last 6 months",
+    "T4s or notices of assessment",
+    "Military service details (IMM 5546), if it applies",
+    "Updated IMM 0157 or endorsement, if my job changed",
+    "Family Information form (IMM 5406)",
+    "Police certificates, if asked",
+    "Letter of explanation for any gaps or corrections",
+  ] },
+  job: { label: "Job change", items: [
+    "Updated provincial endorsement certificate",
+    "Updated Offer of Employment form (IMM 0157)",
+    "Both sent to IRCC by web form within 90 days of the change",
+  ] },
+};
+(function docTracker() {
+  const pick = $("#docs-pick"), list = $("#docs-list"), prog = $("#docs-progress");
+  pick.insertAdjacentHTML("beforeend", Object.entries(DOC_LISTS).map(([k, l]) =>
+    `<label><input type="radio" name="docs" value="${k}"> ${esc(l.label)}</label>`).join(""));
+  let cur = DOC_LISTS[store.get("docs-list")] ? store.get("docs-list") : "c18";
+  const key = (i) => `doc-${cur}-${i}`;
+  function render() {
+    $$('input[name="docs"]', pick).forEach((r) => { r.checked = r.value === cur; });
+    list.innerHTML = DOC_LISTS[cur].items.map((t, i) =>
+      `<li><label><input type="checkbox" data-i="${i}"${store.get(key(i)) === "1" ? " checked" : ""}> ${esc(t)}</label></li>`).join("");
+    count();
+  }
+  function count() {
+    const n = $$("input:checked", list).length, all = DOC_LISTS[cur].items.length;
+    prog.textContent = n === all ? `All ${all} ready.` : `${n} of ${all} ready`;
+  }
+  pick.addEventListener("change", (e) => { cur = e.target.value; store.set("docs-list", cur); render(); });
+  list.addEventListener("change", (e) => { store.set(key(e.target.dataset.i), e.target.checked ? "1" : "0"); count(); });
+  $("#docs-clear").addEventListener("click", () => { DOC_LISTS[cur].items.forEach((_, i) => store.set(key(i), "0")); render(); });
+  $("#docs-print").addEventListener("click", () => {
+    document.body.classList.add("print-docs"); window.print(); document.body.classList.remove("print-docs");
+  });
+  render();
+})();
+SECTIONS.push({ title: "My document tracker", desc: "Tick off C18, ADR and job-change documents", href: "#my-docs",
+  keys: "my documents tracker checklist tick progress print c18 renewal adr job change" });
+
 /* ---------- Live tracker: estimate, weekly movement, cohorts ---------- */
 const DAY_MS = 864e5;
 const fmtDay = (d) => new Date(d * DAY_MS).toLocaleDateString("en-CA", { timeZone: "UTC", month: "short", day: "numeric", year: "numeric" });
