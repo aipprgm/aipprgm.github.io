@@ -457,8 +457,8 @@ function renderTracker(st) {
 
   const pctCell = (n, of) => { const p = Math.round((n / of) * 100); return `<td class="pct" style="--p:${p}%">${p}%</td>`; };
   $("#cohorts").innerHTML = `<caption class="sr-only">Share of members who reached each stage, by month applied</caption>
-    <thead><tr><th scope="col">Applied</th><th scope="col">Members</th><th scope="col">AOR</th><th scope="col">PAL</th><th scope="col">Final decision</th><th scope="col">eCOPR</th></tr></thead>
-    <tbody>${st.cohorts.map((c) => `<tr data-k="${c.year * 12 + c.month}"><th scope="row">${new Date(Date.UTC(c.year, c.month)).toLocaleDateString("en-CA", { timeZone: "UTC", month: "short", year: "numeric" })}</th><td>${c.n}</td>${pctCell(c.AOR, c.n)}${pctCell(c.PAL, c.n)}${pctCell(c.FD, c.n)}${pctCell(c.eCOPR, c.n)}</tr>`).join("")}</tbody>`;
+    <thead><tr><th scope="col">Applied</th><th scope="col">Members</th><th scope="col">AOR</th><th scope="col">PAL</th><th scope="col">Final decision</th><th scope="col">P1</th><th scope="col">P2</th><th scope="col">eCOPR</th></tr></thead>
+    <tbody>${st.cohorts.map((c) => `<tr data-k="${c.year * 12 + c.month}"><th scope="row">${new Date(Date.UTC(c.year, c.month)).toLocaleDateString("en-CA", { timeZone: "UTC", month: "short", year: "numeric" })}</th><td>${c.n}</td>${pctCell(c.AOR, c.n)}${pctCell(c.PAL, c.n)}${pctCell(c.FD, c.n)}${pctCell(c.P1, c.n)}${pctCell(c.P2, c.n)}${pctCell(c.eCOPR, c.n)}</tr>`).join("")}</tbody>`;
   function markCohort() {
     const d = base() === "Applied" && estDate.value ? new Date(estDate.value) : null;
     const k = d ? d.getUTCFullYear() * 12 + d.getUTCMonth() : -1;
