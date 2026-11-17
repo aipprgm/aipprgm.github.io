@@ -263,6 +263,9 @@ const COMMON = [
   { short: "ADR (optional)", stat: ["AOR>ADR / PAL"],  optional: true, title: "Additional Document Request (ADR), if you get one",
     text: "Not everyone gets one, and it can come before or after PAL. IRCC asks for updated documents through your portal. Answer by the deadline in the letter.",
     links: [["What ADRs usually ask for", "#adr"], ["Ask the group", "#community"]] },
+  { short: "Final decision", stat: ["ADR / PAL>FD"],  title: "Final decision (FD)",
+    text: "IRCC finishes reviewing your file and approves it. Inside Canada, the PR portal invitation follows; outside Canada, a request for your passport (PPR).",
+    links: [["AIP data sheet", "#res-aip-sheet"], ["Ask the group", "#community"]] },
 ];
 const ENDINGS = {
   inland: [
