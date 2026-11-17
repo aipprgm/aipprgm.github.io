@@ -246,7 +246,7 @@ const COMMON = [
     text: "Your employer works with the province to endorse your job offer.",
     links: [["Official AIP page", AIP], ["If your job changes", "#job-change"]] },
   { short: "Work permit", title: "C18 work permit (if you need one)",
-    text: "Some applicants get a C18 work permit to work for their employer while PR is processed. You don't need to apply for PR first.",
+    text: "Some applicants get a C18 work permit to work for their employer while PR is processed. Most members apply for PR first. IRCC only requires it if your endorsement certificate has expired: you must have applied for PR before it expired.",
     links: [["C18 checklist", "#c18"], ["C18 tracker", "#res-c18-tracker"], ["Work Permit Guide", "#res-wp-guide"]] },
   { short: "Apply for PR", title: "Submit your PR application",
     text: "You apply online for permanent residence with your endorsement and documents.",
