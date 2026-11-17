@@ -138,7 +138,9 @@
     const reached = (p, s) => at(p, s) !== null || later(p, s);
     const cohorts = [...groups.entries()].sort((a, b) => a[0] - b[0]).filter(([, ps]) => ps.length >= 5).map(([k, ps]) => ({
       year: Math.floor(k / 12), month: k % 12, n: ps.length,
-      AOR: ps.filter((p) => reached(p, "AOR")).length, PAL: ps.filter((p) => reached(p, "PAL")).length,
+      AOR: ps.filter((p) => reached(p, "AOR")).length,
+      ADR: ps.filter((p) => at(p, "ADR") !== null).length, // optional stage: count only members who reported one
+      PAL: ps.filter((p) => reached(p, "PAL")).length,
       FD: ps.filter((p) => reached(p, "FD")).length, P1: ps.filter((p) => reached(p, "P1")).length,
       P2: ps.filter((p) => reached(p, "P2")).length, eCOPR: ps.filter((p) => at(p, "eCOPR") !== null).length,
     }));
