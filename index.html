@@ -9,11 +9,11 @@
   <meta property="og:description" content="Timelines, work permits, job changes, community sheets and official IRCC links for AIP applicants.">
   <meta name="theme-color" content="#f6f4ee" media="(prefers-color-scheme: light)">
   <meta name="theme-color" content="#161c1f" media="(prefers-color-scheme: dark)">
-  <link rel="icon" type="image/svg+xml" href="favicon.svg?v=9">
+  <link rel="icon" type="image/svg+xml" href="favicon.svg?v=10">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Literata:opsz,wght@7..72,500;7..72,600&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="styles.css?v=9">
+  <link rel="stylesheet" href="styles.css?v=10">
 </head>
 <body>
   <a class="skip" href="#main">Skip to content</a>
@@ -27,6 +27,7 @@
       <nav aria-label="Sections">
         <ul class="nav-links">
           <li><a href="#start">Start here</a></li>
+          <li><a href="#adr">ADR</a></li>
           <li><a href="#job-change">Job changes</a></li>
           <li><a href="#resources">Sheets &amp; guides</a></li>
           <li><a href="#files">Files</a></li>
@@ -37,7 +38,22 @@
         <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-4-4"/></svg>
         <span>Search</span><kbd>/</kbd>
       </button>
+      <button class="menu-btn" id="menu-btn" aria-expanded="false" aria-controls="mobile-menu">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
+        <span>Menu</span>
+      </button>
     </div>
+    <nav class="mobile-menu" id="mobile-menu" aria-label="Site menu" hidden>
+      <ul class="wrap">
+        <li><a href="#start">What do you need?</a></li>
+        <li><a href="#journey">Your journey</a></li>
+        <li><a href="#adr">What's in an ADR</a></li>
+        <li><a href="#job-change">Job changes &amp; 90-day deadline</a></li>
+        <li><a href="#resources">Sheets &amp; guides</a></li>
+        <li><a href="#files">Files</a></li>
+        <li><a href="#community">Ask the group</a></li>
+      </ul>
+    </nav>
   </header>
 
   <main id="main">
@@ -214,6 +230,6 @@
     <iframe id="preview-frame" title="Document preview"></iframe>
   </dialog>
 
-  <script src="app.js?v=9"></script>
+  <script src="app.js?v=10"></script>
 </body>
 </html>

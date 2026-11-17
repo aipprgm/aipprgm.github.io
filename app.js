@@ -324,3 +324,15 @@ if (savedStage !== null) stage = +savedStage;
 buildRoute();
 SECTIONS.push({ title: "Your AIP journey", desc: "Pick your stage and see what's next", href: "#journey",
   keys: "journey stage next step route where am i aor ppr copr ecopr portal 1 portal 2 landing inland outland" });
+
+/* ---------- Menu (tablet and phone) ---------- */
+const menuBtn = $("#menu-btn"), menu = $("#mobile-menu");
+function setMenu(open, focusBack = false) {
+  menu.hidden = !open; menuBtn.setAttribute("aria-expanded", open);
+  if (open) $("a", menu).focus(); else if (focusBack) menuBtn.focus();
+}
+menuBtn.addEventListener("click", () => setMenu(menu.hidden));
+menu.addEventListener("click", (e) => { if (e.target.closest("a")) setMenu(false); });
+document.addEventListener("keydown", (e) => { if (e.key === "Escape" && !menu.hidden) setMenu(false, true); });
+document.addEventListener("click", (e) => { if (!menu.hidden && !menu.contains(e.target) && !menuBtn.contains(e.target)) setMenu(false); });
+$$("a", menu).forEach((a) => { const id = a.getAttribute("href").slice(1); navMap.set(id, [...(navMap.get(id) || []), a]); });
