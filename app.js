@@ -353,9 +353,63 @@ document.addEventListener("keydown", (e) => { if (e.key === "Escape" && !menu.hi
 document.addEventListener("click", (e) => { if (!menu.hidden && !menu.contains(e.target) && !menuBtn.contains(e.target)) setMenu(false); });
 $$("a", menu).forEach((a) => { const id = a.getAttribute("href").slice(1); navMap.set(id, [...(navMap.get(id) || []), a]); });
 
+/* ---------- Live tracker: estimate, weekly movement, cohorts ---------- */
+const DAY_MS = 864e5;
+const fmtDay = (d) => new Date(d * DAY_MS).toLocaleDateString("en-CA", { timeZone: "UTC", month: "short", day: "numeric", year: "numeric" });
+const fmtMonth = (d) => new Date(d * DAY_MS).toLocaleDateString("en-CA", { timeZone: "UTC", month: "short", year: "numeric" });
+const STAGE_NAMES = { AOR: "AOR", ADR: "ADR", PAL: "PAL", FD: "Final decision", P1: "Portal 1", P2: "Portal 2", eCOPR: "eCOPR" };
+const MOVED_NAMES = { AOR: ["AOR", "AORs"], ADR: ["ADR", "ADRs"], PAL: ["PAL", "PALs"], FD: ["final decision", "final decisions"], P1: ["Portal 1 invitation", "Portal 1 invitations"], P2: ["Portal 2 completed", "Portal 2s completed"], eCOPR: ["eCOPR", "eCOPRs"] };
+const EST_TARGETS = { Applied: ["AOR", "PAL", "FD", "P1", "eCOPR"], AOR: ["PAL", "FD", "P1", "eCOPR"] };
+
+function renderTracker(st) {
+  const base = () => $('input[name="est-base"]:checked').value;
+  const estDate = $("#est-date"), out = $("#est-out");
+  function estimate() {
+    store.set("est-base", base()); store.set("est-date", estDate.value);
+    markCohort();
+    if (!estDate.value) { out.innerHTML = '<li class="muted">Pick a date to see estimates.</li>'; return; }
+    const from = Math.floor(Date.parse(estDate.value) / DAY_MS);
+    out.innerHTML = EST_TARGETS[base()].map((t) => {
+      const s = st.steps[`${base()}>${t}`];
+      if (!s) return "";
+      const lo = from + s.low, hi = from + s.high, mid = from + s.median;
+      const late = hi < st.today;
+      const note = late ? "Past the usual range. Many members wait longer; check the group."
+        : mid < st.today ? "You're in the usual window now." : `Most likely around ${fmtDay(mid)}.`;
+      return `<li${late ? ' class="late"' : ""}><strong>${STAGE_NAMES[t]}: ${fmtDay(lo)} – ${fmtDay(hi)}</strong><span>${note}</span></li>`;
+    }).join("") + `<li class="muted"><span>Each range covers the middle half of the most recent reports for that stage.</span></li>`;
+  }
+  const savedBase = store.get("est-base");
+  if (savedBase) $$('input[name="est-base"]').forEach((r) => { r.checked = r.value === savedBase; });
+  estDate.value = store.get("est-date") || "";
+  $$('input[name="est-base"]').forEach((r) => r.addEventListener("change", estimate));
+  estDate.addEventListener("input", estimate);
+
+  $("#moved").innerHTML = st.moved.length
+    ? st.moved.map((m) => `<li><strong>${m.count}</strong>${MOVED_NAMES[m.stage][m.count === 1 ? 0 : 1]}<span>To members who applied ${fmtMonth(m.from) === fmtMonth(m.to) ? fmtMonth(m.from) : `${fmtMonth(m.from)} – ${fmtMonth(m.to)}`}</span></li>`).join("")
+    : '<li class="muted">No new dates reported in the last 7 days.</li>';
+
+  const pctCell = (n, of) => { const p = Math.round((n / of) * 100); return `<td class="pct" style="--p:${p}%">${p}%</td>`; };
+  $("#cohorts").innerHTML = `<caption class="sr-only">Share of members who reached each stage, by month applied</caption>
+    <thead><tr><th scope="col">Applied</th><th scope="col">Members</th><th scope="col">AOR</th><th scope="col">PAL</th><th scope="col">Final decision</th><th scope="col">eCOPR</th></tr></thead>
+    <tbody>${st.cohorts.map((c) => `<tr data-k="${c.year * 12 + c.month}"><th scope="row">${new Date(Date.UTC(c.year, c.month)).toLocaleDateString("en-CA", { timeZone: "UTC", month: "short", year: "numeric" })}</th><td>${c.n}</td>${pctCell(c.AOR, c.n)}${pctCell(c.PAL, c.n)}${pctCell(c.FD, c.n)}${pctCell(c.eCOPR, c.n)}</tr>`).join("")}</tbody>`;
+  function markCohort() {
+    const d = base() === "Applied" && estDate.value ? new Date(estDate.value) : null;
+    const k = d ? d.getUTCFullYear() * 12 + d.getUTCMonth() : -1;
+    $$("#cohorts tbody tr").forEach((tr) => tr.classList.toggle("mine", +tr.dataset.k === k));
+  }
+  estimate();
+  $("#tracker-status").hidden = true;
+  $("#tracker-tools").hidden = false;
+  $("#cohort-box").hidden = !st.cohorts.length;
+}
+SECTIONS.push({ title: "Live tracker", desc: "Estimate your dates, see what moved this week and how your month is doing", href: "#tracker",
+  keys: "tracker estimate estimator prediction when will i get aor pal fd ecopr how long cohort month this week moved progress" });
+
 /* ---------- Live numbers from the community data sheet ---------- */
 if (window.SheetStats) SheetStats.load().then((st) => {
   STATS = st;
+  renderTracker(st);
   const badge = $("#live-badge");
   badge.textContent = `Live timelines from ${st.applicants} applicants in the group sheet.`;
   badge.hidden = false;
@@ -370,4 +424,7 @@ if (window.SheetStats) SheetStats.load().then((st) => {
         <span class="bar-num">${k.count} <span class="sr-only">of ${a.withAdr}</span>(${Math.round((k.count / a.withAdr) * 100)}%)</span></li>`).join("")}</ul>`;
     box.hidden = false;
   }
-}).catch(() => { /* Sheet unavailable: the page works without live numbers. */ });
+}).catch(() => {
+  // Sheet unavailable: the page works without live numbers.
+  $("#tracker-status").textContent = "Live data can't be loaded right now. Please try again later.";
+});

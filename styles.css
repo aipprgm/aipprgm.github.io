@@ -305,3 +305,20 @@ dialog::backdrop { background: rgba(20, 26, 28, .45); }
 .terms dl { display: grid; grid-template-columns: max-content 1fr; gap: 6px 14px; margin: 10px 0 0; }
 .terms dt { font-weight: 600; }
 .terms dd { margin: 0; color: var(--muted); }
+
+/* Live tracker */
+.est { list-style: none; margin: 16px 0 0; padding: 0; display: grid; gap: 10px; }
+.est li { border-left: 3px solid var(--spruce); padding: 2px 0 2px 12px; }
+.est li.late { border-color: var(--buoy); }
+.est strong { display: block; }
+.est span { color: var(--muted); font-size: .92rem; }
+.moved { list-style: none; margin: 10px 0 0; padding: 0; display: grid; gap: 8px; }
+.moved strong { font: 600 1.15rem Literata, Georgia, serif; color: var(--spruce); margin-right: 4px; }
+.moved span { display: block; color: var(--muted); font-size: .9rem; }
+.table-wrap { overflow-x: auto; margin-top: 12px; max-width: 860px; }
+.cohorts { border-collapse: collapse; width: 100%; font-size: .95rem; }
+.cohorts th, .cohorts td { padding: 8px 10px; text-align: left; border-bottom: 1px solid var(--line); white-space: nowrap; }
+.cohorts thead th { font-size: .85rem; color: var(--muted); font-weight: 600; }
+.cohorts td.pct { background: linear-gradient(90deg, color-mix(in srgb, var(--spruce) 28%, transparent) var(--p), transparent var(--p)); }
+.cohorts tr.mine th, .cohorts tr.mine td { font-weight: 700; }
+.cohorts tr.mine th::after { content: " (you)"; font-weight: 400; color: var(--muted); }

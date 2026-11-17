@@ -27,6 +27,7 @@
       <nav aria-label="Sections">
         <ul class="nav-links">
           <li><a href="#start">Start here</a></li>
+          <li><a href="#tracker">Tracker</a></li>
           <li><a href="#c18">C18</a></li>
           <li><a href="#adr">ADR</a></li>
           <li><a href="#job-change">Job changes</a></li>
@@ -48,6 +49,7 @@
       <ul class="wrap">
         <li><a href="#start">What do you need?</a></li>
         <li><a href="#journey">Your journey</a></li>
+        <li><a href="#tracker">Live tracker</a></li>
         <li><a href="#c18">C18 work permit checklist</a></li>
         <li><a href="#adr">What's in an ADR</a></li>
         <li><a href="#job-change">Job changes &amp; 90-day deadline</a></li>
@@ -102,6 +104,39 @@
           <dt>CLB / TEER</dt><dd>Canadian Language Benchmark level / job skill level in the National Occupational Classification (NOC).</dd>
         </dl>
       </details>
+    </section>
+
+    <!-- Live tracker: estimates, cohorts and weekly movement, from the group's data sheet (aggregates only) -->
+    <section class="wrap section" id="tracker" aria-labelledby="tracker-title">
+      <h2 id="tracker-title" class="section-title">Live tracker</h2>
+      <p class="measure">Worked out from the dates members share in the group's data sheet, each time you open this page.
+        These are estimates from other people's files, not promises. <a href="#res-aip-sheet">Add your dates</a> to make them better.</p>
+      <p class="hint" id="tracker-status">Loading live data…</p>
+      <div class="tool" id="tracker-tools" hidden>
+        <div class="panel">
+          <h3>Estimate my timeline</h3>
+          <fieldset class="choice">
+            <legend>The date I know</legend>
+            <label><input type="radio" name="est-base" value="Applied" checked> The date I applied</label>
+            <label><input type="radio" name="est-base" value="AOR"> The date I got my AOR</label>
+          </fieldset>
+          <label for="est-date" class="field-label">Date</label>
+          <input type="date" id="est-date">
+          <ol class="est" id="est-out" aria-live="polite"></ol>
+        </div>
+        <div class="panel">
+          <h3>What moved this week</h3>
+          <p class="hint">Stages members reported reaching in the last 7 days.</p>
+          <ul class="moved" id="moved"></ul>
+        </div>
+      </div>
+      <div id="cohort-box" hidden>
+        <h3 class="sub">Where does your month stand?</h3>
+        <p class="hint">Share of members who applied each month and have reported reaching each stage. Some members don't update the sheet, so real numbers may be higher.</p>
+        <div class="table-wrap" tabindex="0" role="region" aria-label="Progress by month applied">
+          <table class="cohorts" id="cohorts"></table>
+        </div>
+      </div>
     </section>
 
     <!-- Start here: top tasks, ordered by how often the group asks about them -->
