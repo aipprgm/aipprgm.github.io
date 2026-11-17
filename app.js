@@ -238,7 +238,7 @@ if ("IntersectionObserver" in window) {
 const AIP = `${IRCC}/services/immigrate-canada/atlantic-immigration.html`;
 const FAQ = "https://settleincanada.netlify.app/faq";
 const COMMON = [
-  { short: "Job offer / Already working for designated employer", title: "Job offer, or already working for a designated employer",
+  { short: "Job offer", title: "Job offer, or already working for a designated employer",
     text: "Your job offer, or the job you already have, must be with an employer designated by an Atlantic province.",
     links: [["Official AIP page", AIP]] },
   { short: "Endorsement", title: "Provincial endorsement",
@@ -265,7 +265,7 @@ const COMMON = [
 ];
 const ENDINGS = {
   inland: [
-    { short: "Portal 1 & 2", stat: ["ADR / PAL>P1", "P1>P2"],  title: "PR portal: Portal 1 and Portal 2",
+    { short: "Portal 1 & 2", stat: ["FD>P1", "P1>P2"],  title: "PR portal: Portal 1 and Portal 2",
       text: "Inside Canada, you land virtually. In Portal 1 you confirm you are in Canada; in Portal 2 you send your photo and address.",
       links: [["eCOPR FAQ", FAQ], ["Ask the group", "#community"]] },
     { short: "eCOPR", stat: ["P2>eCOPR", "Applied>eCOPR"],  title: "eCOPR: you are a permanent resident",

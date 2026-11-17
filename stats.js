@@ -85,7 +85,8 @@
       steps: {
         "Applied>AOR": step("Applied", "AOR"),
         "AOR>ADR / PAL": step("AOR", "ADR / PAL"),
-        "ADR / PAL>P1": step("ADR / PAL", "P1"),
+        "ADR / PAL>FD": step("ADR / PAL", "FD"),
+        "FD>P1": step("FD", "P1"),
         "P1>P2": step("P1", "P2"),
         "P2>eCOPR": step("P2", "eCOPR"),
         "Applied>eCOPR": step("Applied", "eCOPR"),
