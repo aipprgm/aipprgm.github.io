@@ -169,7 +169,7 @@
   async function load() {
     const texts = await Promise.all(TABS.map(async (t) => {
       try {
-        const res = await fetch(`https://docs.google.com/spreadsheets/d/${SHEET}/export?format=csv&gid=${t.gid}`);
+        const res = await fetch(`https://docs.google.com/spreadsheets/d/${SHEET}/export?format=csv&gid=${t.gid}`, { cache: "no-store" });
         return res.ok ? await res.text() : "";
       } catch { return ""; }
     }));

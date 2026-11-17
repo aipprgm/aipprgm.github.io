@@ -311,7 +311,7 @@ function statHtml(s) {
     ${s.stat[0] === "Applied>AOR" && rows[0][1].waitingMedian ? `<p>${rows[0][1].waiting} members are still waiting for their AOR, about ${rows[0][1].waitingMedian} days so far.</p>` : ""}
     <p class="stat-note">Based on the ${rows[0][1].n} most recent reports. Every file is different.</p></div>`;
 }
-function setStage(i, save = true) {
+function setStage(i, save = true, scroll = true) {
   stage = i;
   $$(".stop", stopsEl).forEach((b, j) => {
     b.setAttribute("aria-checked", j === i); b.tabIndex = j === i ? 0 : -1; b.classList.toggle("done", j < i);
@@ -323,7 +323,7 @@ function setStage(i, save = true) {
     (n ? `<div class="next"><p class="label">Up next</p><h3>${esc(n.title)}</h3><p>${esc(n.text)}</p>${linkHtml(n.links)}</div>`
        : `<div class="next"><p class="label">Done</p><h3>You made it</h3><p>Share your timeline in the data sheet to help the next applicant.</p>${linkHtml([["AIP data sheet", "#res-aip-sheet"]])}</div>`);
   if (save) store.set("stage", i);
-  $$(".stop", stopsEl)[i].scrollIntoView({ block: "nearest", inline: "center", behavior: save ? "smooth" : "auto" });
+  if (scroll) $$(".stop", stopsEl)[i].scrollIntoView({ block: "nearest", inline: "center", behavior: save ? "smooth" : "auto" });
 }
 stopsEl.addEventListener("click", (e) => { const b = e.target.closest(".stop"); if (b) setStage(+b.dataset.i); });
 stopsEl.addEventListener("keydown", (e) => {
@@ -427,10 +427,12 @@ const STAGE_NAMES = { AOR: "AOR", ADR: "ADR", PAL: "PAL", FD: "Final decision", 
 const MOVED_NAMES = { AOR: ["AOR", "AORs"], ADR: ["ADR", "ADRs"], PAL: ["PAL", "PALs"], FD: ["final decision", "final decisions"], P1: ["Portal 1 invitation", "Portal 1 invitations"], P2: ["Portal 2 completed", "Portal 2s completed"], eCOPR: ["eCOPR", "eCOPRs"] };
 const EST_TARGETS = { Applied: ["AOR", "PAL", "FD", "P1", "eCOPR"], AOR: ["PAL", "FD", "P1", "eCOPR"] };
 
+let trackerBound = false;
 function renderTracker(st) {
   const base = () => $('input[name="est-base"]:checked').value;
   const estDate = $("#est-date"), out = $("#est-out");
   function estimate() {
+    const st = STATS;
     store.set("est-base", base()); store.set("est-date", estDate.value);
     markCohort();
     if (!estDate.value) { out.innerHTML = '<li class="muted">Pick a date to see estimates.</li>'; return; }
@@ -445,11 +447,14 @@ function renderTracker(st) {
       return `<li${late ? ' class="late"' : ""}><strong>${STAGE_NAMES[t]}: ${fmtDay(lo)} – ${fmtDay(hi)}</strong><span>${note}</span></li>`;
     }).join("") + `<li class="muted"><span>Each range covers the middle half of the most recent reports for that stage.</span></li>`;
   }
-  const savedBase = store.get("est-base");
-  if (savedBase) $$('input[name="est-base"]').forEach((r) => { r.checked = r.value === savedBase; });
-  estDate.value = store.get("est-date") || "";
-  $$('input[name="est-base"]').forEach((r) => r.addEventListener("change", estimate));
-  estDate.addEventListener("input", estimate);
+  if (!trackerBound) { // first load only, so a refresh never overwrites what the reader typed
+    trackerBound = true;
+    const savedBase = store.get("est-base");
+    if (savedBase) $$('input[name="est-base"]').forEach((r) => { r.checked = r.value === savedBase; });
+    estDate.value = store.get("est-date") || "";
+    $$('input[name="est-base"]').forEach((r) => r.addEventListener("change", estimate));
+    estDate.addEventListener("input", estimate);
+  }
 
   $("#moved").innerHTML = st.moved.length
     ? st.moved.map((m) => `<li><strong>${m.count}</strong>${MOVED_NAMES[m.stage][m.count === 1 ? 0 : 1]}<span>To members who applied ${fmtMonth(m.from) === fmtMonth(m.to) ? fmtMonth(m.from) : `${fmtMonth(m.from)} – ${fmtMonth(m.to)}`}</span></li>`).join("")
@@ -465,7 +470,8 @@ function renderTracker(st) {
     $$("#cohorts tbody tr").forEach((tr) => tr.classList.toggle("mine", +tr.dataset.k === k));
   }
   estimate();
-  $("#tracker-status").hidden = true;
+  const time = new Date().toLocaleTimeString("en-CA", { hour: "numeric", minute: "2-digit" });
+  $("#tracker-status").textContent = `Updated at ${time} · refreshes every 10 minutes while this page is open.`;
   $("#tracker-tools").hidden = false;
   $("#cohort-box").hidden = !st.cohorts.length;
 }
@@ -473,13 +479,20 @@ SECTIONS.push({ title: "Live tracker", desc: "Estimate your dates, see what move
   keys: "tracker estimate estimator prediction when will i get aor pal fd ecopr how long cohort month this week moved progress" });
 
 /* ---------- Live numbers from the community data sheet ---------- */
-if (window.SheetStats) SheetStats.load().then((st) => {
-  STATS = st;
+// Loads on open, then every 10 minutes while the tab is visible, and when the reader returns to a stale tab.
+const REFRESH_MS = 10 * 60e3;
+let lastLoad = 0, loading = false;
+function loadStats() {
+  if (!window.SheetStats || loading) return;
+  loading = true;
+  SheetStats.load().then((st) => {
+  const first = !STATS;
+  STATS = st; lastLoad = Date.now();
   renderTracker(st);
   const badge = $("#live-badge");
   badge.textContent = `Live timelines from ${st.applicants} applicants in the group sheet.`;
   badge.hidden = false;
-  if (stage !== null) setStage(stage, false);
+  if (stage !== null) setStage(stage, false, first);
   const a = st.adr, top = a.kinds[0] ? a.kinds[0].count : 1;
   if (a.withAdr >= 10) {
     const box = $("#adr-live");
@@ -491,6 +504,10 @@ if (window.SheetStats) SheetStats.load().then((st) => {
     box.hidden = false;
   }
 }).catch(() => {
-  // Sheet unavailable: the page works without live numbers.
-  $("#tracker-status").textContent = "Live data can't be loaded right now. Please try again later.";
-});
+  // Sheet unavailable: the page works without live numbers, and keeps the last numbers it had.
+  if (!STATS) $("#tracker-status").textContent = "Live data can't be loaded right now. Please try again later.";
+}).finally(() => { loading = false; });
+}
+loadStats();
+setInterval(() => { if (!document.hidden) loadStats(); }, REFRESH_MS);
+document.addEventListener("visibilitychange", () => { if (!document.hidden && Date.now() - lastLoad > REFRESH_MS) loadStats(); });
