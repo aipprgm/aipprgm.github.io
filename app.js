@@ -257,13 +257,13 @@ const COMMON = [
   { short: "Medicals & biometrics", title: "Medical exam and biometrics",
     text: "IRCC asks for your medical exam and biometrics. The order can vary, so follow the letters you receive.",
     links: [["Medical exams", `${IRCC}/services/application/medical-police/medical-exams.html`], ["AIP data sheet", "#res-aip-sheet"]] },
-  { short: "PAL", stat: ["AOR>ADR / PAL"],  title: "Pre-Arrival Letter (PAL)",
+  { short: "PAL", stat: ["AOR>PAL"],  title: "Pre-Arrival Letter (PAL)",
     text: "IRCC's letter inviting you to free pre-arrival settlement services. Your file is still in processing; the group often sees it after eligibility checks.",
     links: [["AIP data sheet", "#res-aip-sheet"], ["Ask the group", "#community"]] },
-  { short: "ADR (optional)", stat: ["AOR>ADR / PAL"],  optional: true, title: "Additional Document Request (ADR), if you get one",
+  { short: "ADR (optional)", stat: ["AOR>ADR"],  optional: true, title: "Additional Document Request (ADR), if you get one",
     text: "Not everyone gets one, and it can come before or after PAL. IRCC asks for updated documents through your portal. Answer by the deadline in the letter.",
     links: [["What ADRs usually ask for", "#adr"], ["Ask the group", "#community"]] },
-  { short: "Final decision", stat: ["ADR / PAL>FD"],  title: "Final decision (FD)",
+  { short: "Final decision", stat: ["PAL>FD"],  title: "Final decision (FD)",
     text: "IRCC finishes reviewing your file and approves it. Inside Canada, the PR portal invitation follows; outside Canada, a request for your passport (PPR).",
     links: [["AIP data sheet", "#res-aip-sheet"], ["Ask the group", "#community"]] },
 ];
@@ -308,7 +308,8 @@ function statHtml(s) {
   if (!rows.length) return "";
   return `<div class="stat"><p class="stat-label">From the group's data sheet</p>${rows.map(([k, v]) =>
     `<p><strong>${stepName(k)}: about ${v.median} days</strong> <span>usually ${v.low}–${v.high} days</span></p>`).join("")}
-    <p class="stat-note">Based on the latest ${rows[0][1].n} reports. Every file is different.</p></div>`;
+    ${s.stat[0] === "Applied>AOR" && rows[0][1].waitingMedian ? `<p>${rows[0][1].waiting} members are still waiting for their AOR, about ${rows[0][1].waitingMedian} days so far.</p>` : ""}
+    <p class="stat-note">Based on the ${rows[0][1].n} most recent reports. Every file is different.</p></div>`;
 }
 function setStage(i, save = true) {
   stage = i;
