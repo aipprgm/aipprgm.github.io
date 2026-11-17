@@ -193,8 +193,9 @@ function renderSearch() {
   hits = index().filter((x) => { const hay = `${x.title} ${x.desc} ${x.keys || ""}`.toLowerCase(); return words.every((w) => hay.includes(w)); }).slice(0, 12);
   sel = 0;
   sOut.innerHTML = hits.length
-    ? hits.map((h, i) => `<li><a href="${h.href}"${ext(h.href)} role="option" aria-selected="${i === sel}">${esc(h.title)}<small>${esc(h.desc)}</small></a></li>`).join("")
+    ? hits.map((h, i) => `<li><a href="${h.href}"${ext(h.href)} class="${i === sel ? "active" : ""}">${esc(h.title)}<small>${esc(h.desc)}</small></a></li>`).join("")
     : '<li class="none">Nothing found. Try another word, or ask the group.</li>';
+  $("#search-status").textContent = hits.length ? `${hits.length} result${hits.length === 1 ? "" : "s"}. Use the arrow keys and Enter.` : "No results.";
 }
 function openSearch() { sIn.value = ""; renderSearch(); sDlg.showModal(); sIn.focus(); }
 $("#open-search").addEventListener("click", openSearch);
@@ -207,7 +208,7 @@ sIn.addEventListener("keydown", (e) => {
   if (e.key === "ArrowDown" || e.key === "ArrowUp") {
     e.preventDefault(); if (!opts.length) return;
     sel = (sel + (e.key === "ArrowDown" ? 1 : -1) + opts.length) % opts.length;
-    opts.forEach((o, i) => o.setAttribute("aria-selected", i === sel)); opts[sel].scrollIntoView({ block: "nearest" });
+    opts.forEach((o, i) => o.classList.toggle("active", i === sel)); $("#search-status").textContent = opts[sel].textContent; opts[sel].scrollIntoView({ block: "nearest" });
   } else if (e.key === "Enter" && opts[sel]) { e.preventDefault(); opts[sel].click(); }
 });
 document.addEventListener("keydown", (e) => {

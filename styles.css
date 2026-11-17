@@ -150,7 +150,7 @@ dialog::backdrop { background: rgba(20, 26, 28, .45); }
 .search-results { list-style: none; margin: 0; padding: 6px; max-height: 60vh; overflow: auto; }
 .search-results a { display: block; padding: 10px 12px; border-radius: 6px; text-decoration: none; color: var(--ink); }
 .search-results a small { display: block; color: var(--muted); }
-.search-results a[aria-selected="true"], .search-results a:hover { background: var(--sand); }
+.search-results a.active, .search-results a:hover { background: var(--sand); }
 .search-results .none { padding: 14px 12px; color: var(--muted); }
 #preview { width: min(1100px, 100% - 24px); height: min(86vh, 900px); }
 #preview[open] { display: flex; flex-direction: column; }
