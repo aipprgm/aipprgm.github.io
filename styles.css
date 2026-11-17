@@ -345,7 +345,10 @@ dialog::backdrop { background: rgba(20, 26, 28, .45); }
 
 /* Your place in IRCC's queue */
 .queue { grid-column: 1 / -1; }
-.queue select { width: 100%; max-width: 260px; padding: 10px 12px; border: 1px solid var(--line); border-radius: 6px; background: var(--paper); color: var(--ink); font: inherit; }
+.ym { border: 0; padding: 0; margin: 0; display: flex; flex-wrap: wrap; gap: 8px 16px; }
+.ym legend { padding: 0; width: 100%; }
+.ym label { display: grid; gap: 4px; font-size: .9rem; color: var(--muted); }
+.queue select { width: 100%; min-width: 130px; max-width: 200px; padding: 10px 12px; border: 1px solid var(--line); border-radius: 6px; background: var(--paper); color: var(--ink); font: inherit; }
 .queue-big { font: 600 clamp(1.6rem, 4vw, 2.1rem) Literata, Georgia, serif; margin: 16px 0 2px; }
 .queue-facts { list-style: none; margin: 12px 0 0; padding: 0; display: grid; gap: 6px; max-width: 70ch; }
 .queue-facts li { padding-left: 14px; border-left: 3px solid var(--line); }

@@ -439,18 +439,33 @@ function irccMonth(appliedDay) {
 
 // Your place in the queue (IRCC plus Data Sheet): IRCC's people-ahead and months-left for one application month,
 // a combined eCOPR estimate from both sources, the group's progress for that month and this week's PAL months.
-let queueBound = false;
+// The month is picked with two short native selects (Year, Month) rather than one long list:
+// they stay small as months are added and work with keyboards, screen readers and phone pickers.
+let queueBound = false, queueSet = null;
+const MONTH_NAMES = Array.from({ length: 12 }, (_, i) => new Date(Date.UTC(2000, i)).toLocaleDateString("en-CA", { timeZone: "UTC", month: "long" }));
 function renderQueue(st) {
   const ir = st.ircc, box = $("#queue");
   if (!ir || !Object.keys(ir.months).length) { box.hidden = true; return; }
-  const sel = $("#queue-month"), out = $("#queue-out");
+  const ySel = $("#queue-year"), mSel = $("#queue-mon"), out = $("#queue-out");
   const keys = Object.keys(ir.months).filter((k) => k >= "2024-01").sort();
-  const label = (k) => new Date(Date.UTC(+k.slice(0, 4), +k.slice(5) - 1)).toLocaleDateString("en-CA", { timeZone: "UTC", month: "long", year: "numeric" });
-  const keep = sel.value || store.get("queue-month") || keys[Math.max(0, keys.length - 13)];
-  sel.innerHTML = keys.map((k) => `<option value="${k}">${label(k)}</option>`).join("");
-  sel.value = keys.includes(keep) ? keep : keys[keys.length - 1];
+  const years = [...new Set(keys.map((k) => k.slice(0, 4)))];
+  // Month options for a year: only months IRCC has published.
+  const fillMonths = (y, want) => {
+    const ms = keys.filter((k) => k.startsWith(y)).map((k) => k.slice(5));
+    mSel.innerHTML = ms.map((m) => `<option value="${m}">${MONTH_NAMES[+m - 1]}</option>`).join("");
+    mSel.value = ms.includes(want) ? want : ms[ms.length - 1];
+  };
+  const set = (k) => {
+    if (!keys.includes(k)) return false;
+    ySel.value = k.slice(0, 4); fillMonths(k.slice(0, 4), k.slice(5)); return true;
+  };
+  const current = ySel.value && mSel.value ? `${ySel.value}-${mSel.value}` : null;
+  ySel.innerHTML = years.map((y) => `<option value="${y}">${y}</option>`).join("");
+  if (!set(current) && !set(store.get("queue-month") || "")) set(keys[Math.max(0, keys.length - 13)]);
   function show() {
-    const k = sel.value, m = ir.months[k];
+    const st = STATS, ir = st.ircc;
+    const k = `${ySel.value}-${mSel.value}`, m = ir.months[k];
+    if (!m) return;
     store.set("queue-month", k);
     const c = st.cohorts.find((x) => `${x.year}-${String(x.month + 1).padStart(2, "0")}` === k);
     const behind = m.ahead && ir.waiting ? Math.max(0, Math.min(100, Math.round((1 - m.ahead / ir.waiting) * 100))) : null;
@@ -476,7 +491,12 @@ function renderQueue(st) {
       <ul class="queue-facts">${facts.map((f) => `<li>${esc(f)}</li>`).join("")}</ul>
       <p class="source">Source: <a href="${IRCC}/services/application/check-processing-times.html" target="_blank" rel="noopener">IRCC processing times</a> (Atlantic Immigration Program) and the group's data sheet. The combined estimate runs from the group's typical time to the later of IRCC's estimate and the group's slow end.</p>`;
   }
-  if (!queueBound) { queueBound = true; sel.addEventListener("change", show); }
+  if (!queueBound) {
+    queueBound = true;
+    ySel.addEventListener("change", () => { fillMonths(ySel.value, mSel.value); show(); });
+    mSel.addEventListener("change", show);
+  }
+  queueSet = (k) => { if (set(k)) show(); };
   show();
   box.hidden = false;
 }
@@ -491,6 +511,10 @@ function renderTracker(st) {
     markCohort();
     if (!estDate.value) { out.innerHTML = '<li class="muted">Pick a date to see estimates.</li>'; return; }
     const from = Math.floor(Date.parse(estDate.value) / DAY_MS);
+    if (queueSet) {
+      const d = new Date((base() === "Applied" ? from : from - (st.steps["Applied>AOR"]?.median || 0)) * DAY_MS);
+      queueSet(`${d.getUTCFullYear()}-${String(d.getUTCMonth() + 1).padStart(2, "0")}`);
+    }
     // Buffer: group data leans fast, because members who wait longest often stop updating the sheet.
     // So the late end of each range is stretched by `stretch`: IRCC's own estimate for the application
     // month divided by the group's typical total, and never less than BUFFER_MIN.
@@ -534,8 +558,8 @@ function renderTracker(st) {
     const k = d ? d.getUTCFullYear() * 12 + d.getUTCMonth() : -1;
     $$("#cohorts tbody tr").forEach((tr) => tr.classList.toggle("mine", +tr.dataset.k === k));
   }
-  estimate();
   renderQueue(st);
+  estimate();
   const time = new Date().toLocaleTimeString("en-CA", { hour: "numeric", minute: "2-digit" });
   $("#tracker-status").textContent = `Updated at ${time} · refreshes every 10 minutes while this page is open.`;
   $("#tracker-tools").hidden = false;
