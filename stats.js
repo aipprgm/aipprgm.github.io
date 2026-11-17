@@ -168,6 +168,31 @@
     };
   }
 
+  // IRCC's own AIP numbers: the file behind canada.ca's "check processing times" tool (updated monthly).
+  // Per application month it gives "About N people ahead of you" and "N months left" (or "We need more time").
+  const IRCC_JSON = "https://www.canada.ca/content/dam/ircc/documents/json/flpt-en.json";
+  const num = (t) => { const m = /([\d,]+)/.exec(t || ""); return m ? +m[1].replace(/,/g, "") : null; };
+  function readIrcc(d) {
+    const ahead = d["people-ahead"] || {}, left = d["wait-times"] || {}, months = {};
+    for (const k of Object.keys(ahead)) {
+      const m = /^aip-(\d{4})\/(\d{2})$/.exec(k);
+      if (!m) continue;
+      const w = left[k] || "";
+      months[`${m[1]}-${m[2]}`] = { ahead: num(ahead[k]), left: /month/i.test(w) ? num(w) : null, moreTime: /more time/i.test(w) };
+    }
+    const updated = Date.parse((d["default-update"] || {}).flpt_lastupdated + " UTC");
+    return {
+      updated: Number.isNaN(updated) ? null : Math.floor(updated / DAY),
+      processing: num((d["current-flpt"] || {}).aip), waiting: num((d["total-people"] || {}).aip), months,
+    };
+  }
+  async function loadIrcc() {
+    try {
+      const res = await fetch(IRCC_JSON, { cache: "no-store" });
+      return res.ok ? readIrcc(await res.json()) : null;
+    } catch { return null; }
+  }
+
   async function load() {
     const texts = await Promise.all(TABS.map(async (t) => {
       try {
@@ -176,8 +201,10 @@
       } catch { return ""; }
     }));
     if (!texts.some(Boolean)) throw new Error("sheet unavailable");
-    return analyse(texts);
+    const st = analyse(texts);
+    st.ircc = await loadIrcc(); // null if canada.ca can't be reached; the page then uses group data only
+    return st;
   }
 
-  root.SheetStats = { load, analyse, STAGES, DAY };
+  root.SheetStats = { load, analyse, readIrcc, STAGES, DAY };
 })(typeof window !== "undefined" ? window : globalThis);

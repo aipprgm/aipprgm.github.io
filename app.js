@@ -427,6 +427,16 @@ const STAGE_NAMES = { AOR: "AOR", ADR: "ADR", PAL: "PAL", FD: "Final decision", 
 const MOVED_NAMES = { AOR: ["AOR", "AORs"], ADR: ["ADR", "ADRs"], PAL: ["PAL", "PALs"], FD: ["final decision", "final decisions"], P1: ["Portal 1 invitation", "Portal 1 invitations"], P2: ["Portal 2 completed", "Portal 2s completed"], eCOPR: ["eCOPR", "eCOPRs"] };
 const EST_TARGETS = { Applied: ["AOR", "PAL", "FD", "P1", "eCOPR"], AOR: ["PAL", "FD", "P1", "eCOPR"] };
 
+const BUFFER_MIN = 1.15; // at least 15% on the late end of every range
+// IRCC's numbers for the month an application was sent; finish = IRCC's update date + months left.
+function irccMonth(appliedDay) {
+  const ir = STATS && STATS.ircc;
+  if (!ir) return null;
+  const d = new Date(appliedDay * DAY_MS), m = ir.months[`${d.getUTCFullYear()}-${String(d.getUTCMonth() + 1).padStart(2, "0")}`];
+  if (!m) return null;
+  return { ...m, finish: m.left !== null && ir.updated ? ir.updated + Math.round(m.left * 30.44) : null };
+}
+
 let trackerBound = false;
 function renderTracker(st) {
   const base = () => $('input[name="est-base"]:checked').value;
@@ -437,15 +447,26 @@ function renderTracker(st) {
     markCohort();
     if (!estDate.value) { out.innerHTML = '<li class="muted">Pick a date to see estimates.</li>'; return; }
     const from = Math.floor(Date.parse(estDate.value) / DAY_MS);
-    out.innerHTML = EST_TARGETS[base()].map((t) => {
+    // Buffer: group data leans fast, because members who wait longest often stop updating the sheet.
+    // So the late end of each range is stretched by `stretch`: IRCC's own estimate for the application
+    // month divided by the group's typical total, and never less than BUFFER_MIN.
+    const applied = base() === "Applied" ? from : from - (st.steps["Applied>AOR"]?.median || 0);
+    const official = irccMonth(applied);
+    const total = st.steps[`${base()}>eCOPR`]?.median; // group's typical time from the date entered to eCOPR
+    const stretch = Math.max(BUFFER_MIN, official?.finish && total ? (official.finish - from) / total : 0);
+    const head = official ? `<li class="official"><strong>IRCC's estimate for ${fmtMonth(applied)} applications</strong><span>${
+      official.left !== null ? `About ${official.left} months left as of ${fmtDay(st.ircc.updated)}, so around ${fmtMonth(official.finish)}.`
+        : "IRCC says it needs more time on applications from this month."}${official.ahead ? ` About ${official.ahead.toLocaleString("en-CA")} people ahead.` : ""}</span></li>` : "";
+    out.innerHTML = head + EST_TARGETS[base()].map((t) => {
       const s = st.steps[`${base()}>${t}`];
       if (!s) return "";
-      const lo = from + s.low, hi = from + s.high, mid = from + s.median;
+      const lo = from + s.low, mid = from + s.median, hi = from + Math.max(s.high, Math.round(s.median * stretch));
       const late = hi < st.today;
-      const note = late ? "Past the usual range. Many members wait longer; check the group."
+      const note = late ? "Past the usual range, even with the buffer. Check with the group."
         : mid < st.today ? "You're in the usual window now." : `Most likely around ${fmtDay(mid)}.`;
       return `<li${late ? ' class="late"' : ""}><strong>${STAGE_NAMES[t]}: ${fmtDay(lo)} – ${fmtDay(hi)}</strong><span>${note}</span></li>`;
-    }).join("") + `<li class="muted"><span>Each range covers the middle half of the most recent reports for that stage.</span></li>`;
+    }).join("") + `<li class="muted"><span>Ranges start at the group's typical times. The late end adds a buffer (${Math.round((stretch - 1) * 100)}% here)${
+      official?.finish ? " based on IRCC's estimate" : ""}, because members who wait longest often stop updating the sheet.</span></li>`;
   }
   if (!trackerBound) { // first load only, so a refresh never overwrites what the reader typed
     trackerBound = true;
