@@ -250,25 +250,25 @@ const COMMON = [
   { short: "Apply for PR", title: "Submit your PR application",
     text: "You apply online for permanent residence with your endorsement and documents.",
     links: [["Official AIP page", AIP]] },
-  { short: "AOR", title: "Acknowledgement of receipt (AOR)",
+  { short: "AOR", stat: ["Applied>AOR"],  title: "Acknowledgement of receipt (AOR)",
     text: "IRCC confirms it received your application. AIP has no online status tracker: watch your linked application in your GCKey account, and compare dates in the data sheet.",
     links: [["AIP data sheet", "#res-aip-sheet"], ["Processing times", `${IRCC}/services/application/check-processing-times.html`]] },
   { short: "Medicals & biometrics", title: "Medical exam and biometrics",
     text: "IRCC asks for your medical exam and biometrics. The order can vary, so follow the letters you receive.",
     links: [["Medical exams", `${IRCC}/services/application/medical-police/medical-exams.html`], ["AIP data sheet", "#res-aip-sheet"]] },
-  { short: "PAL", title: "Pre-Arrival Letter (PAL)",
+  { short: "PAL", stat: ["AOR>ADR / PAL"],  title: "Pre-Arrival Letter (PAL)",
     text: "IRCC's letter inviting you to free pre-arrival settlement services. Your file is still in processing; the group often sees it after eligibility checks.",
     links: [["AIP data sheet", "#res-aip-sheet"], ["Ask the group", "#community"]] },
-  { short: "ADR (optional)", optional: true, title: "Additional Document Request (ADR), if you get one",
+  { short: "ADR (optional)", stat: ["AOR>ADR / PAL"],  optional: true, title: "Additional Document Request (ADR), if you get one",
     text: "Not everyone gets one, and it can come before or after PAL. IRCC asks for updated documents through your portal. Answer by the deadline in the letter.",
     links: [["What ADRs usually ask for", "#adr"], ["Ask the group", "#community"]] },
 ];
 const ENDINGS = {
   inland: [
-    { short: "Portal 1 & 2", title: "PR portal: Portal 1 and Portal 2",
+    { short: "Portal 1 & 2", stat: ["ADR / PAL>P1", "P1>P2"],  title: "PR portal: Portal 1 and Portal 2",
       text: "Inside Canada, you land virtually. In Portal 1 you confirm you are in Canada; in Portal 2 you send your photo and address.",
       links: [["eCOPR FAQ", FAQ], ["Ask the group", "#community"]] },
-    { short: "eCOPR", title: "eCOPR: you are a permanent resident",
+    { short: "eCOPR", stat: ["P2>eCOPR", "Applied>eCOPR"],  title: "eCOPR: you are a permanent resident",
       text: "Your electronic Confirmation of Permanent Residence arrives in the portal. That is your virtual landing. Welcome!",
       links: [["eCOPR FAQ", FAQ], ["Ask the group", "#community"]] },
   ],
@@ -296,6 +296,16 @@ function buildRoute() {
   if (stage !== null) setStage(Math.min(stage, STAGES.length - 1), false);
   else { card.innerHTML = ""; $(".stop", stopsEl).tabIndex = 0; }
 }
+let STATS = null;
+const stepName = (k) => k.replace(">", " → ");
+function statHtml(s) {
+  if (!STATS || !s.stat) return "";
+  const rows = s.stat.map((k) => [k, STATS.steps[k]]).filter(([, v]) => v);
+  if (!rows.length) return "";
+  return `<div class="stat"><p class="stat-label">From the group's data sheet</p>${rows.map(([k, v]) =>
+    `<p><strong>${stepName(k)}: about ${v.median} days</strong> <span>usually ${v.low}–${v.high} days</span></p>`).join("")}
+    <p class="stat-note">Based on the latest ${rows[0][1].n} reports. Every file is different.</p></div>`;
+}
 function setStage(i, save = true) {
   stage = i;
   $$(".stop", stopsEl).forEach((b, j) => {
@@ -304,7 +314,7 @@ function setStage(i, save = true) {
   done.style.setProperty("--off", len * (1 - (i + 0.5) / STAGES.length));
   const s = STAGES[i], n = STAGES[i + 1];
   card.classList.remove("swap"); void card.offsetWidth; card.classList.add("swap");
-  card.innerHTML = `<div><p class="label">You are here · ${i + 1} of ${STAGES.length}</p><h3>${esc(s.title)}</h3><p>${esc(s.text)}</p>${linkHtml(s.links)}</div>` +
+  card.innerHTML = `<div><p class="label">You are here · ${i + 1} of ${STAGES.length}</p><h3>${esc(s.title)}</h3><p>${esc(s.text)}</p>${statHtml(s)}${linkHtml(s.links)}</div>` +
     (n ? `<div class="next"><p class="label">Up next</p><h3>${esc(n.title)}</h3><p>${esc(n.text)}</p>${linkHtml(n.links)}</div>`
        : `<div class="next"><p class="label">Done</p><h3>You made it</h3><p>Share your timeline in the data sheet to help the next applicant.</p>${linkHtml([["AIP data sheet", "#res-aip-sheet"]])}</div>`);
   if (save) store.set("stage", i);
@@ -337,3 +347,22 @@ menu.addEventListener("click", (e) => { if (e.target.closest("a")) setMenu(false
 document.addEventListener("keydown", (e) => { if (e.key === "Escape" && !menu.hidden) setMenu(false, true); });
 document.addEventListener("click", (e) => { if (!menu.hidden && !menu.contains(e.target) && !menuBtn.contains(e.target)) setMenu(false); });
 $$("a", menu).forEach((a) => { const id = a.getAttribute("href").slice(1); navMap.set(id, [...(navMap.get(id) || []), a]); });
+
+/* ---------- Live numbers from the community data sheet ---------- */
+if (window.SheetStats) SheetStats.load().then((st) => {
+  STATS = st;
+  const badge = $("#live-badge");
+  badge.textContent = `Live timelines from ${st.applicants} applicants in the group sheet.`;
+  badge.hidden = false;
+  if (stage !== null) setStage(stage, false);
+  const a = st.adr, top = a.kinds[0] ? a.kinds[0].count : 1;
+  if (a.withAdr >= 10) {
+    const box = $("#adr-live");
+    box.innerHTML = `<h3>Live from the data sheet</h3>
+      <p class="hint">${a.withAdr} members listed what their ADR asked for. Each bar shows how many were asked for that item.</p>
+      <ul class="bars">${a.kinds.map((k) => `<li><span class="bar-label">${esc(k.label)}</span>
+        <span class="bar-track" aria-hidden="true"><span style="width:${(k.count / top) * 100}%"></span></span>
+        <span class="bar-num">${k.count} <span class="sr-only">of ${a.withAdr}</span>(${Math.round((k.count / a.withAdr) * 100)}%)</span></li>`).join("")}</ul>`;
+    box.hidden = false;
+  }
+}).catch(() => { /* Sheet unavailable: the page works without live numbers. */ });

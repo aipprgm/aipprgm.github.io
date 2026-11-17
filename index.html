@@ -9,11 +9,11 @@
   <meta property="og:description" content="Timelines, work permits, job changes, community sheets and official IRCC links for AIP applicants.">
   <meta name="theme-color" content="#f6f4ee" media="(prefers-color-scheme: light)">
   <meta name="theme-color" content="#161c1f" media="(prefers-color-scheme: dark)">
-  <link rel="icon" type="image/svg+xml" href="favicon.svg?v=11">
+  <link rel="icon" type="image/svg+xml" href="favicon.svg?v=12">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Literata:opsz,wght@7..72,500;7..72,600&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="styles.css?v=11">
+  <link rel="stylesheet" href="styles.css?v=12">
 </head>
 <body>
   <a class="skip" href="#main">Skip to content</a>
@@ -67,7 +67,7 @@
     <section class="wrap journey" id="journey" aria-labelledby="journey-title">
       <div class="journey-head">
         <h2 id="journey-title">Where are you on the route?</h2>
-        <p class="hint">Tap your current stage. We'll remember it on this device.</p>
+        <p class="hint">Tap your current stage. We'll remember it on this device. <span class="live" id="live-badge" hidden></span></p>
         <fieldset class="where" id="where">
           <legend class="sr-only">Where are you applying from?</legend>
           <label><input type="radio" name="where" value="inland" checked> Inside Canada</label>
@@ -120,6 +120,7 @@
         <li><strong>Letter of explanation</strong><span>For gaps or dates that don't line up across your forms.</span></li>
         <li><strong>Police certificates or a medical request</strong><span>Less common in the ADR itself; a medical request often arrives around the same time.</span></li>
       </ol>
+      <div class="adr-live" id="adr-live" hidden></div>
       <p class="source">Sources: reports from the AIP applicants group (2024–2026) and public forums, checked against IRCC's
         <a href="https://www.canada.ca/en/immigration-refugees-citizenship/corporate/publications-manuals/operational-bulletins-manuals/permanent-residence/economic-classes/atlantic-immigration-program/examination.html" target="_blank" rel="noopener">AIP examination instructions</a>.
         Not an official IRCC list.</p>
@@ -231,6 +232,7 @@
     <iframe id="preview-frame" title="Document preview"></iframe>
   </dialog>
 
-  <script src="app.js?v=11"></script>
+  <script src="stats.js?v=12"></script>
+  <script src="app.js?v=12"></script>
 </body>
 </html>
