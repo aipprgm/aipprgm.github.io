@@ -234,13 +234,14 @@ if ("IntersectionObserver" in window) {
 
 /* ---------- Journey map ---------- */
 // General stages of the AIP PR route. Order of medicals/biometrics can vary; always follow IRCC's letters.
-// The last stages differ: applicants inside Canada land virtually (Portal 1, Portal 2, eCOPR).
+// The last stages differ: applicants inside Canada land virtually (Portal 1, Portal 2, eCOPR) with no PPR;
+// applicants outside Canada get PPR, then COPR and landing at a port of entry.
 const AIP = `${IRCC}/services/immigrate-canada/atlantic-immigration.html`;
 const STATUS = `${IRCC}/services/application/check-status.html`;
 const FAQ = "https://settleincanada.netlify.app/faq";
 const COMMON = [
-  { short: "Job offer", title: "Job offer from a designated employer",
-    text: "Your offer must come from an employer designated by an Atlantic province.",
+  { short: "Job offer / Already working for designated employer", title: "Job offer, or already working for a designated employer",
+    text: "Your job offer, or the job you already have, must be with an employer designated by an Atlantic province.",
     links: [["Official AIP page", AIP]] },
   { short: "Endorsement", title: "Provincial endorsement",
     text: "Your employer works with the province to endorse your job offer.",
@@ -257,9 +258,6 @@ const COMMON = [
   { short: "Medicals & biometrics", title: "Medical exam and biometrics",
     text: "IRCC asks for your medical exam and biometrics. The order can vary, so follow the letters you receive.",
     links: [["Medical exams", `${IRCC}/services/application/medical-police/medical-exams.html`], ["Check status", STATUS]] },
-  { short: "PPR", title: "Final steps (PPR)",
-    text: "IRCC asks for final details and documents before confirming your PR.",
-    links: [["Check status", STATUS], ["Contact IRCC", `${IRCC}/corporate/contact-ircc/web-form.html`]] },
 ];
 const ENDINGS = {
   inland: [
@@ -271,6 +269,9 @@ const ENDINGS = {
       links: [["eCOPR FAQ", FAQ], ["Ask the group", "#community"]] },
   ],
   outland: [
+    { short: "PPR", title: "Final steps (PPR)",
+      text: "IRCC asks for final details and documents before confirming your PR.",
+      links: [["Check status", STATUS], ["Contact IRCC", `${IRCC}/corporate/contact-ircc/web-form.html`]] },
     { short: "COPR & landing", title: "Confirmation of PR and landing",
       text: "Outside Canada, you receive your COPR and complete landing when you arrive at a port of entry. Welcome!",
       links: [["Official AIP page", AIP], ["Ask the group", "#community"]] },

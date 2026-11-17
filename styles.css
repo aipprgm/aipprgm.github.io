@@ -245,3 +245,9 @@ dialog::backdrop { background: rgba(20, 26, 28, .45); }
 @media (max-width: 860px) {
   .route { -webkit-mask-image: linear-gradient(90deg, #000 85%, transparent); mask-image: linear-gradient(90deg, #000 85%, transparent); }
 }
+
+/* Logo: maple leaf over waves, coloured from the theme so it has light and dark versions. */
+.brand .logo { width: 28px; height: 28px; }
+.logo .leaf { fill: var(--buoy); stroke: none; }
+.logo .wave { fill: none; stroke: var(--spruce); stroke-width: 2.2; }
+.stop { max-width: 120px; }
