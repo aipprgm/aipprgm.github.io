@@ -176,6 +176,7 @@ const FILES = [];
 
 /* ---------- Search (press / or Ctrl/Cmd+K) ---------- */
 const SECTIONS = [
+  { title: "What's usually in an ADR", desc: "Additional Document Request: common items", href: "#adr", keys: "adr additional document request schedule a pay stubs reference letter imm 5669 imm 5406 family information" },
   { title: "Start here", desc: "What do you need?", href: "#start", keys: "help start" },
   { title: "C18 language test notice", desc: "Apply or renew with a valid language test", href: "#top", keys: "c18 language test ielts celpip clb tef" },
   { title: "Your 90-day deadline", desc: "Job changes", href: "#job-change", keys: "deadline 90 days job change" },
@@ -258,6 +259,12 @@ const COMMON = [
   { short: "Medicals & biometrics", title: "Medical exam and biometrics",
     text: "IRCC asks for your medical exam and biometrics. The order can vary, so follow the letters you receive.",
     links: [["Medical exams", `${IRCC}/services/application/medical-police/medical-exams.html`], ["Check status", STATUS]] },
+  { short: "PAL", title: "Pre-Arrival Letter (PAL)",
+    text: "IRCC's letter inviting you to free pre-arrival settlement services. Your file is still in processing; the group often sees it after eligibility checks.",
+    links: [["AIP data sheet", "#res-aip-sheet"], ["Check status", STATUS]] },
+  { short: "ADR (optional)", optional: true, title: "Additional Document Request (ADR), if you get one",
+    text: "Not everyone gets one, and it can come before or after PAL. IRCC asks for updated documents through your portal. Answer by the deadline in the letter.",
+    links: [["What ADRs usually ask for", "#adr"], ["Ask the group", "#community"]] },
 ];
 const ENDINGS = {
   inland: [
@@ -288,7 +295,7 @@ function buildRoute() {
   STAGES = [...COMMON, ...ENDINGS[where]];
   routeEl.style.setProperty("--n", STAGES.length);
   stopsEl.innerHTML = STAGES.map((s, i) =>
-    `<li><button class="stop" role="radio" aria-checked="false" tabindex="-1" data-i="${i}"><span class="dot"></span>${esc(s.short)}</button></li>`).join("");
+    `<li><button class="stop${s.optional ? " optional" : ""}" role="radio" aria-checked="false" tabindex="-1" data-i="${i}"><span class="dot"></span>${esc(s.short)}</button></li>`).join("");
   if (stage !== null) setStage(Math.min(stage, STAGES.length - 1), false);
   else { card.innerHTML = ""; $(".stop", stopsEl).tabIndex = 0; }
 }

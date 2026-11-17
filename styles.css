@@ -190,11 +190,11 @@ dialog::backdrop { background: rgba(20, 26, 28, .45); }
 .journey-head .hint { margin: 0 0 14px; }
 .route { position: relative; overflow-x: auto; scroll-snap-type: x mandatory; scrollbar-width: none; padding: 4px 0 10px; }
 .route::-webkit-scrollbar { display: none; }
-.route-line { position: absolute; left: 0; top: 12px; width: max(100%, calc(var(--n, 8) * 108px)); height: 44px; overflow: visible; }
+.route-line { position: absolute; left: 0; top: 12px; width: max(100%, calc(var(--n, 8) * 96px)); height: 44px; overflow: visible; }
 .route-shore { stroke: var(--sand); stroke-width: 10; opacity: .9; }
 .route-path { stroke: var(--line); stroke-width: 2.5; stroke-dasharray: 2 8; }
 .route-done { stroke: var(--spruce); stroke-width: 3; stroke-dasharray: var(--len, 1200); stroke-dashoffset: var(--off, 1200); transition: stroke-dashoffset .9s cubic-bezier(.6,0,.2,1); }
-.stops { position: relative; list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(var(--n, 8), minmax(96px, 1fr)); min-width: calc(var(--n, 8) * 108px); }
+.stops { position: relative; list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(var(--n, 8), minmax(88px, 1fr)); min-width: calc(var(--n, 8) * 96px); }
 .stops li { scroll-snap-align: center; display: flex; justify-content: center; }
 .stop {
   display: flex; flex-direction: column; align-items: center; gap: 8px; background: none; border: 0; padding: 4px 2px;
@@ -251,3 +251,13 @@ dialog::backdrop { background: rgba(20, 26, 28, .45); }
 .logo .leaf { fill: var(--buoy); stroke: none; }
 .logo .wave { fill: none; stroke: var(--spruce); stroke-width: 2.2; }
 .stop { max-width: 120px; }
+
+/* Optional journey stop (ADR): dashed ring */
+.stop.optional .dot { border-style: dashed; }
+.stop.optional.done .dot { border-style: solid; }
+
+/* ADR list */
+.adr-list { margin: 18px 0 0; padding-left: 1.4em; display: grid; gap: 10px; max-width: 76ch; }
+.adr-list li::marker { color: var(--buoy); font-weight: 600; }
+.adr-list strong { display: block; }
+.adr-list span { color: var(--muted); font-size: .95rem; }
