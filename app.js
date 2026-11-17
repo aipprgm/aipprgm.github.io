@@ -8,8 +8,8 @@ const IRCC = "https://www.canada.ca/en/immigration-refugees-citizenship";
 const TASKS = [
   { title: "Track my application", desc: "AIP has no online status tracker. Compare your dates with others in the data sheet", href: "#res-aip-sheet",
     keys: "status portal tracker aor ppr ita gcms timeline processing" },
-  { title: "Work permit (C18) or SOWP", desc: "C18 rules, plus the restoration, reconsideration and SOWP tracker", href: "#res-c18-tracker",
-    keys: "work permit wp c18 sowp spouse spousal open restoration reconsideration language test" },
+  { title: "Work permit (C18) or SOWP", desc: "C18 checklist for first applications and renewals", href: "#c18",
+    keys: "work permit wp c18 wpsl support letter referral imm 0156 renew renewal extension language test" },
   { title: "PR confirmation and landing", desc: "Official AIP guidance on confirmation of PR (COPR) and landing", href: `${IRCC}/services/immigrate-canada/atlantic-immigration.html`,
     keys: "pr card landing copr confirmation permanent residence" },
   { title: "How long will it take?", desc: "IRCC processing times, and the group's real timelines", href: `${IRCC}/services/application/check-processing-times.html`,
@@ -175,7 +175,7 @@ const FILES = [];
 const SECTIONS = [
   { title: "What's usually in an ADR", desc: "Additional Document Request: common items", href: "#adr", keys: "adr additional document request schedule a pay stubs reference letter imm 5669 imm 5406 family information" },
   { title: "Start here", desc: "What do you need?", href: "#start", keys: "help start" },
-  { title: "C18 language test notice", desc: "Apply or renew with a valid language test", href: "#top", keys: "c18 language test ielts celpip clb tef" },
+  { title: "C18 work permit checklist", desc: "Documents, fees and renewals", href: "#c18", keys: "c18 work permit wpsl support letter referral imm 0156 offer of employment number compliance fee renew extension language test ielts celpip clb tef eca bowp" },
   { title: "Your 90-day deadline", desc: "Job changes", href: "#job-change", keys: "deadline 90 days job change" },
   { title: "Files", desc: "PDFs shared by the group", href: "#files", keys: "pdf files download" },
 ];
@@ -245,8 +245,8 @@ const COMMON = [
     text: "Your employer works with the province to endorse your job offer.",
     links: [["Official AIP page", AIP], ["If your job changes", "#job-change"]] },
   { short: "Work permit", title: "C18 work permit (if you need one)",
-    text: "Some applicants get a C18 work permit to start working while PR is processed. Use a valid language test.",
-    links: [["C18 tracker", "#res-c18-tracker"], ["Work Permit Guide", "#res-wp-guide"]] },
+    text: "Some applicants get a C18 work permit to work for their employer while PR is processed. You don't need to apply for PR first.",
+    links: [["C18 checklist", "#c18"], ["C18 tracker", "#res-c18-tracker"], ["Work Permit Guide", "#res-wp-guide"]] },
   { short: "Apply for PR", title: "Submit your PR application",
     text: "You apply online for permanent residence with your endorsement and documents.",
     links: [["Official AIP page", AIP]] },

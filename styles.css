@@ -90,7 +90,9 @@ kbd { font: .75rem ui-monospace, monospace; border: 1px solid var(--line); borde
 
 /* Notice */
 .notice { margin-top: 36px; background: var(--notice); border-left: 4px solid var(--buoy); padding: 18px 22px; border-radius: 0 6px 6px 0; }
-.notice h2 { font-size: 1.15rem; margin-bottom: 4px; }
+.notice h2, .notice h3 { font-size: 1.15rem; margin-bottom: 4px; }
+.section .notice { margin: 18px 0 8px; max-width: 76ch; }
+.sub { font-size: 1.1rem; margin: 28px 0 0; }
 .notice p { margin: 0; }
 
 /* Job change tool */
