@@ -12,7 +12,7 @@ const TASKS = [
     keys: "work permit wp c18 wpsl support letter referral imm 0156 renew renewal extension language test" },
   { title: "PR confirmation and landing", desc: "Official AIP guidance on confirmation of PR (COPR) and landing", href: `${IRCC}/services/immigrate-canada/atlantic-immigration.html`,
     keys: "pr card landing copr confirmation permanent residence" },
-  { title: "How long will it take?", desc: "IRCC processing times, and the group's real timelines", href: `${IRCC}/services/application/check-processing-times.html`,
+  { title: "How long will it take?", desc: "IRCC processing times (choose Atlantic Immigration Program), and the group's real timelines", href: `${IRCC}/services/application/check-processing-times.html`,
     keys: "timeline how long processing time wait" },
   { title: "Medical exam", desc: "IRCC instructions for immigration medical exams", href: `${IRCC}/services/application/medical-police/medical-exams.html`,
     keys: "medical exam panel physician upfront" },
@@ -177,6 +177,7 @@ const SECTIONS = [
   { title: "Start here", desc: "What do you need?", href: "#start", keys: "help start" },
   { title: "C18 work permit checklist", desc: "Documents, fees and renewals", href: "#c18", keys: "c18 work permit wpsl support letter referral imm 0156 offer of employment number compliance fee renew extension language test ielts celpip clb tef eca bowp" },
   { title: "Your 90-day deadline", desc: "Job changes", href: "#job-change", keys: "deadline 90 days job change" },
+  { title: "Abbreviations", desc: "AOR, PAL, ADR, FD, WPSL, SOWP and more", href: "#journey", keys: "glossary terms abbreviations meaning aor pal adr fd ppr copr ecopr wpsl sowp bowp eca clb teer" },
   { title: "Files", desc: "PDFs shared by the group", href: "#files", keys: "pdf files download" },
 ];
 function index() {
@@ -252,7 +253,7 @@ const COMMON = [
     links: [["Official AIP page", AIP]] },
   { short: "AOR", stat: ["Applied>AOR"],  title: "Acknowledgement of receipt (AOR)",
     text: "IRCC confirms it received your application. AIP has no online status tracker: watch your linked application in your GCKey account, and compare dates in the data sheet.",
-    links: [["AIP data sheet", "#res-aip-sheet"], ["Processing times", `${IRCC}/services/application/check-processing-times.html`]] },
+    links: [["AIP data sheet", "#res-aip-sheet"], ["IRCC processing times (choose AIP)", `${IRCC}/services/application/check-processing-times.html`]] },
   { short: "Medicals & biometrics", title: "Medical exam and biometrics",
     text: "IRCC asks for your medical exam and biometrics. The order can vary, so follow the letters you receive.",
     links: [["Medical exams", `${IRCC}/services/application/medical-police/medical-exams.html`], ["AIP data sheet", "#res-aip-sheet"]] },

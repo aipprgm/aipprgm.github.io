@@ -298,3 +298,10 @@ dialog::backdrop { background: rgba(20, 26, 28, .45); }
 .bar-track span { display: block; height: 100%; background: var(--spruce); border-radius: 5px; }
 .bar-num { color: var(--muted); font-variant-numeric: tabular-nums; min-width: 4.5em; text-align: right; }
 @media (max-width: 640px) { .bars li { grid-template-columns: 1fr auto; } .bar-track { grid-column: 1 / -1; grid-row: 2; } }
+
+/* Abbreviations list under the journey map */
+.terms { margin-top: 16px; max-width: 76ch; }
+.terms summary { cursor: pointer; font-weight: 600; }
+.terms dl { display: grid; grid-template-columns: max-content 1fr; gap: 6px 14px; margin: 10px 0 0; }
+.terms dt { font-weight: 600; }
+.terms dd { margin: 0; color: var(--muted); }
