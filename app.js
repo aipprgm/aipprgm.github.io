@@ -6,7 +6,7 @@ const IRCC = "https://www.canada.ca/en/immigration-refugees-citizenship";
 
 // Ordered by how often the group asks about each topic.
 const TASKS = [
-  { title: "Track my application", desc: "Check your status, and compare AOR, medical and PPR dates with others", href: "#res-aip-sheet",
+  { title: "Track my application", desc: "AIP has no online status tracker. Compare your dates with others in the data sheet", href: "#res-aip-sheet",
     keys: "status portal tracker aor ppr ita gcms timeline processing" },
   { title: "Work permit (C18) or SOWP", desc: "C18 rules, plus the restoration, reconsideration and SOWP tracker", href: "#res-c18-tracker",
     keys: "work permit wp c18 sowp spouse spousal open restoration reconsideration language test" },
@@ -51,9 +51,6 @@ const RESOURCES = [
   { group: "Official IRCC pages", title: "Check processing times",
     desc: "IRCC's current estimates for each application type.", url: `${IRCC}/services/application/check-processing-times.html`,
     keys: "processing time timeline" },
-  { group: "Official IRCC pages", title: "Check your application status",
-    desc: "Sign in to see where your application is.", url: `${IRCC}/services/application/check-status.html`,
-    keys: "status tracker portal" },
 ];
 
 const $ = (s, el = document) => el.querySelector(s);
@@ -238,7 +235,6 @@ if ("IntersectionObserver" in window) {
 // The last stages differ: applicants inside Canada land virtually (Portal 1, Portal 2, eCOPR) with no PPR;
 // applicants outside Canada get PPR, then COPR and landing at a port of entry.
 const AIP = `${IRCC}/services/immigrate-canada/atlantic-immigration.html`;
-const STATUS = `${IRCC}/services/application/check-status.html`;
 const FAQ = "https://settleincanada.netlify.app/faq";
 const COMMON = [
   { short: "Job offer / Already working for designated employer", title: "Job offer, or already working for a designated employer",
@@ -254,14 +250,14 @@ const COMMON = [
     text: "You apply online for permanent residence with your endorsement and documents.",
     links: [["Official AIP page", AIP]] },
   { short: "AOR", title: "Acknowledgement of receipt (AOR)",
-    text: "IRCC confirms it received your application. Compare your dates with others in the data sheet.",
+    text: "IRCC confirms it received your application. AIP has no online status tracker: watch your linked application in your GCKey account, and compare dates in the data sheet.",
     links: [["AIP data sheet", "#res-aip-sheet"], ["Processing times", `${IRCC}/services/application/check-processing-times.html`]] },
   { short: "Medicals & biometrics", title: "Medical exam and biometrics",
     text: "IRCC asks for your medical exam and biometrics. The order can vary, so follow the letters you receive.",
-    links: [["Medical exams", `${IRCC}/services/application/medical-police/medical-exams.html`], ["Check status", STATUS]] },
+    links: [["Medical exams", `${IRCC}/services/application/medical-police/medical-exams.html`], ["AIP data sheet", "#res-aip-sheet"]] },
   { short: "PAL", title: "Pre-Arrival Letter (PAL)",
     text: "IRCC's letter inviting you to free pre-arrival settlement services. Your file is still in processing; the group often sees it after eligibility checks.",
-    links: [["AIP data sheet", "#res-aip-sheet"], ["Check status", STATUS]] },
+    links: [["AIP data sheet", "#res-aip-sheet"], ["Ask the group", "#community"]] },
   { short: "ADR (optional)", optional: true, title: "Additional Document Request (ADR), if you get one",
     text: "Not everyone gets one, and it can come before or after PAL. IRCC asks for updated documents through your portal. Answer by the deadline in the letter.",
     links: [["What ADRs usually ask for", "#adr"], ["Ask the group", "#community"]] },
@@ -278,7 +274,7 @@ const ENDINGS = {
   outland: [
     { short: "PPR", title: "Final steps (PPR)",
       text: "IRCC asks for final details and documents before confirming your PR.",
-      links: [["Check status", STATUS], ["Contact IRCC", `${IRCC}/corporate/contact-ircc/web-form.html`]] },
+      links: [["Contact IRCC", `${IRCC}/corporate/contact-ircc/web-form.html`], ["AIP data sheet", "#res-aip-sheet"], ["Ask the group", "#community"]] },
     { short: "COPR & landing", title: "Confirmation of PR and landing",
       text: "Outside Canada, you receive your COPR and complete landing when you arrive at a port of entry. Welcome!",
       links: [["Official AIP page", AIP], ["Ask the group", "#community"]] },
