@@ -437,8 +437,8 @@ function irccMonth(appliedDay) {
   return { ...m, finish: m.left !== null && ir.updated ? ir.updated + Math.round(m.left * 30.44) : null };
 }
 
-// Your place in IRCC's queue: IRCC's people-ahead and months-left for one application month,
-// next to the group's progress for that month and which months are getting PALs this week.
+// Your place in the queue (IRCC plus Data Sheet): IRCC's people-ahead and months-left for one application month,
+// a combined eCOPR estimate from both sources, the group's progress for that month and this week's PAL months.
 let queueBound = false;
 function renderQueue(st) {
   const ir = st.ircc, box = $("#queue");
@@ -456,16 +456,25 @@ function renderQueue(st) {
     const behind = m.ahead && ir.waiting ? Math.max(0, Math.min(100, Math.round((1 - m.ahead / ir.waiting) * 100))) : null;
     const finish = m.left !== null && ir.updated ? ir.updated + Math.round(m.left * 30.44) : null;
     const pal = st.moved.find((x) => x.stage === "PAL");
+    // Combined eCOPR estimate: the early end is the group's typical total from the middle of the month,
+    // the late end is the later of IRCC's finish date and the group's slow end.
+    const mid = Date.UTC(+k.slice(0, 4), +k.slice(5) - 1, 15) / DAY_MS, g = st.steps["Applied>eCOPR"];
+    const early = g ? Math.max(mid + g.median, st.today) : null;
+    const late = g ? Math.max(mid + g.high, finish || 0) : finish;
+    const combined = !late ? "" : late < st.today
+      ? "Combined estimate: by both IRCC's numbers and the data sheet, most of this month should be finishing now."
+      : `Combined estimate for eCOPR: ${early && fmtMonth(early) !== fmtMonth(late) ? `${fmtMonth(early)} – ${fmtMonth(late)}` : `around ${fmtMonth(late)}`}.`;
     const facts = [
+      combined,
       finish ? `IRCC: about ${m.left} months left as of ${fmtDay(ir.updated)}, so around ${fmtMonth(finish)}.` : "IRCC says it needs more time on applications from this month.",
       ir.processing ? `IRCC's current AIP processing time is about ${ir.processing} months, with about ${ir.waiting.toLocaleString("en-CA")} people waiting.` : "",
-      c ? `In the group, ${c.n} members applied this month: ${Math.round((c.AOR / c.n) * 100)}% have their AOR, ${Math.round((c.PAL / c.n) * 100)}% their PAL and ${Math.round((c.eCOPR / c.n) * 100)}% their eCOPR.` : "Not enough members from this month in the data sheet yet.",
-      pal ? `This week, PALs went to members who applied ${fmtMonth(pal.from) === fmtMonth(pal.to) ? fmtMonth(pal.from) : `${fmtMonth(pal.from)} – ${fmtMonth(pal.to)}`}.` : "",
+      c ? `Data sheet: ${c.n} members applied this month. ${Math.round((c.AOR / c.n) * 100)}% have their AOR, ${Math.round((c.PAL / c.n) * 100)}% their PAL, ${Math.round((c.FD / c.n) * 100)}% a final decision and ${Math.round((c.eCOPR / c.n) * 100)}% their eCOPR.` : "Data sheet: not enough members from this month yet.",
+      pal ? `Data sheet: this week, PALs went to members who applied ${fmtMonth(pal.from) === fmtMonth(pal.to) ? fmtMonth(pal.from) : `${fmtMonth(pal.from)} – ${fmtMonth(pal.to)}`}.` : "",
     ].filter(Boolean);
     out.innerHTML = `<p class="queue-big">${m.ahead ? `About ${m.ahead.toLocaleString("en-CA")} people ahead` : "Position not published"}</p>
-      ${behind !== null ? `<p class="hint">You're further along than about ${behind}% of the AIP queue.</p><div class="bar" aria-hidden="true"><span style="width:${behind}%"></span></div>` : ""}
+      ${behind !== null ? `<p class="hint">${behind < 1 ? "This is the newest month in IRCC's queue." : `You're further along than about ${behind}% of the AIP queue.`}</p><div class="bar" aria-hidden="true"><span style="width:${behind}%"></span></div>` : ""}
       <ul class="queue-facts">${facts.map((f) => `<li>${esc(f)}</li>`).join("")}</ul>
-      <p class="source">Source: <a href="${IRCC}/services/application/check-processing-times.html" target="_blank" rel="noopener">IRCC processing times</a> (Atlantic Immigration Program), and the group's data sheet.</p>`;
+      <p class="source">Source: <a href="${IRCC}/services/application/check-processing-times.html" target="_blank" rel="noopener">IRCC processing times</a> (Atlantic Immigration Program) and the group's data sheet. The combined estimate runs from the group's typical time to the later of IRCC's estimate and the group's slow end.</p>`;
   }
   if (!queueBound) { queueBound = true; sel.addEventListener("change", show); }
   show();
@@ -532,7 +541,7 @@ function renderTracker(st) {
   $("#tracker-tools").hidden = false;
   $("#cohort-box").hidden = !st.cohorts.length;
 }
-SECTIONS.push({ title: "Your place in IRCC's queue", desc: "People ahead of you and months left, from IRCC", href: "#queue",
+SECTIONS.push({ title: "Your place in the queue (IRCC plus Data Sheet)", desc: "People ahead, months left and a combined estimate", href: "#queue",
   keys: "queue people ahead line position months left ircc processing time official 26 months waiting" });
 SECTIONS.push({ title: "Live tracker", desc: "Estimate your dates, see what moved this week and how your month is doing", href: "#tracker",
   keys: "tracker estimate estimator prediction when will i get aor pal fd ecopr how long cohort month this week moved progress" });
