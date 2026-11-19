@@ -353,14 +353,7 @@ dialog::backdrop { background: rgba(20, 26, 28, .45); }
 .queue-facts { list-style: none; margin: 12px 0 0; padding: 0; display: grid; gap: 6px; max-width: 70ch; }
 .queue-facts li { padding-left: 14px; border-left: 3px solid var(--line); }
 
-/* ---------- Design signature: lighthouse beam, passport stamps, chart grid ---------- */
-/* Chart grid: faint nautical-chart lines behind the page */
-body {
-  background-image:
-    linear-gradient(color-mix(in srgb, var(--harbour) 7%, transparent) 1px, transparent 1px),
-    linear-gradient(90deg, color-mix(in srgb, var(--harbour) 7%, transparent) 1px, transparent 1px);
-  background-size: 96px 96px;
-}
+/* ---------- Design signature: lighthouse beam, passport stamps, chart marks ---------- */
 /* Section titles: scale-bar ticks and a chart coordinate from an Atlantic city */
 .section-title {
   display: flex; flex-wrap: wrap; justify-content: space-between; align-items: baseline; gap: 4px 16px;
@@ -432,6 +425,5 @@ body {
   .lh-beam, .lh-lamp, .stop[aria-checked="true"]::before, .checklist label:has(input:checked)::after { animation: none; }
 }
 @media print {
-  body { background-image: none; }
   .lighthouse { display: none; }
 }
