@@ -388,7 +388,15 @@ body {
 .lh-roof { fill: var(--ink); }
 .lh-wave { fill: none; stroke: var(--spruce); stroke-width: 2.2; }
 #beam-fade stop { stop-color: #f2c14e; }
-.lh-beam { stroke: none; transform-box: view-box; transform-origin: 165px 53px; opacity: .45; animation: sweep 2.8s cubic-bezier(.45,0,.2,1) .3s both; }
+.lh-beam { stroke: none; transform-box: view-box; transform-origin: 165px 53px; opacity: .45; animation: sweep 2.8s cubic-bezier(.45,0,.2,1) .3s both, turn 6s ease-in-out 3.1s infinite; }
+.lh-lamp { animation: flash 6s ease-in-out 3.1s infinite; }
+/* After the first sweep, the beam keeps turning: it narrows as it swings toward
+   the viewer, the lamp flashes, then the beam widens again. */
+@keyframes turn {
+  0%, 100% { transform: scaleX(1); opacity: .45; }
+  45%, 55% { transform: scaleX(.03); opacity: 0; }
+}
+@keyframes flash { 0%, 40%, 60%, 100% { filter: none; } 50% { filter: drop-shadow(0 0 6px #f2c14e) brightness(1.15); } }
 @keyframes sweep {
   0% { transform: rotate(-24deg); opacity: 0; }
   55% { transform: rotate(10deg); opacity: .9; }
@@ -421,7 +429,7 @@ body {
 @keyframes stamp { from { scale: 1.7; opacity: 0; } }
 
 @media (prefers-reduced-motion: reduce) {
-  .lh-beam, .stop[aria-checked="true"]::before, .checklist label:has(input:checked)::after { animation: none; }
+  .lh-beam, .lh-lamp, .stop[aria-checked="true"]::before, .checklist label:has(input:checked)::after { animation: none; }
 }
 @media print {
   body { background-image: none; }
