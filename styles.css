@@ -352,3 +352,78 @@ dialog::backdrop { background: rgba(20, 26, 28, .45); }
 .queue-big { font: 600 clamp(1.6rem, 4vw, 2.1rem) Literata, Georgia, serif; margin: 16px 0 2px; }
 .queue-facts { list-style: none; margin: 12px 0 0; padding: 0; display: grid; gap: 6px; max-width: 70ch; }
 .queue-facts li { padding-left: 14px; border-left: 3px solid var(--line); }
+
+/* ---------- Design signature: lighthouse beam, passport stamps, chart grid ---------- */
+/* Chart grid: faint nautical-chart lines behind the page */
+body {
+  background-image:
+    linear-gradient(color-mix(in srgb, var(--harbour) 7%, transparent) 1px, transparent 1px),
+    linear-gradient(90deg, color-mix(in srgb, var(--harbour) 7%, transparent) 1px, transparent 1px);
+  background-size: 96px 96px;
+}
+/* Section titles: scale-bar ticks and a chart coordinate from an Atlantic city */
+.section-title {
+  display: flex; flex-wrap: wrap; justify-content: space-between; align-items: baseline; gap: 4px 16px;
+  background: repeating-linear-gradient(90deg, var(--line) 0 1px, transparent 1px 24px) left bottom / 100% 6px no-repeat;
+}
+.section-title::after {
+  content: var(--coord, "") / "";
+  font: 500 .7rem/1 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; letter-spacing: .08em; color: var(--muted); white-space: nowrap;
+}
+#start-title { --coord: "HALIFAX 44°39′N 63°34′W"; }
+#tracker-title { --coord: "ST. JOHN'S 47°34′N 52°43′W"; }
+#c18-title { --coord: "CHARLOTTETOWN 46°14′N 63°08′W"; }
+#adr-title { --coord: "FREDERICTON 45°58′N 66°39′W"; }
+#job-title { --coord: "MONCTON 46°05′N 64°47′W"; }
+#docs-title { --coord: "SAINT JOHN 45°16′N 66°04′W"; }
+#res-title { --coord: "SYDNEY 46°08′N 60°11′W"; }
+#files-title { --coord: "CORNER BROOK 48°57′N 57°57′W"; }
+
+/* Lighthouse: sweeps its beam across the hero once on load */
+.intro { position: relative; }
+.lighthouse { position: absolute; right: 0; top: 24px; width: 220px; height: auto; pointer-events: none; color: var(--harbour); }
+.lh-tower { fill: var(--surface); stroke: var(--ink); stroke-width: 1.5; stroke-linejoin: round; }
+.lh-band { fill: var(--buoy); }
+.lh-lamp { fill: #f2c14e; stroke: var(--ink); stroke-width: 1.5; }
+.lh-roof { fill: var(--ink); }
+.lh-wave { fill: none; stroke: var(--spruce); stroke-width: 2.2; }
+#beam-fade stop { stop-color: #f2c14e; }
+.lh-beam { stroke: none; transform-box: view-box; transform-origin: 165px 53px; opacity: .45; animation: sweep 2.8s cubic-bezier(.45,0,.2,1) .3s both; }
+@keyframes sweep {
+  0% { transform: rotate(-24deg); opacity: 0; }
+  55% { transform: rotate(10deg); opacity: .9; }
+  100% { transform: rotate(0); opacity: .45; }
+}
+@media (max-width: 760px) { .lighthouse { display: none; } }
+
+/* Journey: the beam lights your current stop; finished stops get a stamp ring */
+.stop { position: relative; isolation: isolate; }
+.stop[aria-checked="true"]::before {
+  content: ""; position: absolute; z-index: -1; top: 0; left: 50%; width: 64px; height: 36px; translate: -50% 0;
+  clip-path: polygon(44% 0, 56% 0, 100% 100%, 0 100%);
+  background: linear-gradient(to bottom, transparent, color-mix(in srgb, #f2c14e 55%, transparent));
+  animation: glow 3.2s ease-in-out infinite;
+}
+@keyframes glow { 50% { opacity: .55; } }
+.stop.done .dot { outline: 1.5px dashed var(--spruce); outline-offset: 2px; }
+
+/* Checklists: a ticked item gets a tilted "Ready" passport stamp */
+.checklist li { position: relative; }
+.checklist label:has(input:checked) { padding-right: 84px; }
+.checklist label:has(input:checked)::after {
+  content: "Ready" / "";
+  position: absolute; right: 2px; top: 50%; translate: 0 -50%; rotate: -8deg;
+  padding: 3px 7px; border: 2px solid var(--spruce); border-radius: 4px; box-shadow: inset 0 0 0 1px var(--surface), inset 0 0 0 2px var(--spruce);
+  color: var(--spruce); font: 700 .68rem/1 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; letter-spacing: .14em; text-transform: uppercase;
+  mask-image: repeating-linear-gradient(-35deg, #000 0 3px, rgb(0 0 0 / .72) 3px 4px);
+  animation: stamp .28s cubic-bezier(.2,1.6,.4,1) both;
+}
+@keyframes stamp { from { scale: 1.7; opacity: 0; } }
+
+@media (prefers-reduced-motion: reduce) {
+  .lh-beam, .stop[aria-checked="true"]::before, .checklist label:has(input:checked)::after { animation: none; }
+}
+@media print {
+  body { background-image: none; }
+  .lighthouse { display: none; }
+}
