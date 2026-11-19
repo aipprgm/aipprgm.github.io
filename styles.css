@@ -375,11 +375,14 @@ dialog::backdrop { background: rgba(20, 26, 28, .45); }
 /* Lighthouse: sweeps its beam across the hero once on load */
 .intro { position: relative; }
 .lighthouse { position: absolute; right: 0; top: 24px; width: 220px; height: auto; pointer-events: none; color: var(--harbour); }
-.lh-tower { fill: var(--surface); stroke: var(--ink); stroke-width: 1.5; stroke-linejoin: round; }
-.lh-band { fill: var(--buoy); }
-.lh-lamp { fill: #f2c14e; stroke: var(--ink); stroke-width: 1.5; }
-.lh-roof { fill: var(--ink); }
-.lh-wave { fill: none; stroke: var(--spruce); stroke-width: 2.2; }
+/* Flat, geometric lighthouse: solid tower, one bold band, shaded right half */
+.lighthouse :is(rect, path, circle) { stroke: none; }
+.lh-tower, .lh-gallery { fill: var(--ink); }
+.lh-band, .lh-roof { fill: var(--buoy); }
+.lh-shade { fill: #000; opacity: .18; }
+.lh-window { fill: var(--paper); }
+.lh-lamp { fill: #f2c14e; }
+.lighthouse .lh-wave { fill: none; stroke: var(--spruce); stroke-width: 2.2; }
 #beam-fade stop { stop-color: #f2c14e; }
 .lh-beam { stroke: none; transform-box: view-box; transform-origin: 165px 53px; opacity: .45; animation: sweep 2.8s cubic-bezier(.45,0,.2,1) .3s both, turn 6s ease-in-out 3.1s infinite; }
 .lh-lamp { animation: flash 6s ease-in-out 3.1s infinite; }

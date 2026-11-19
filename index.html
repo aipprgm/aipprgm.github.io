@@ -13,7 +13,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Literata:opsz,wght@7..72,500;7..72,600&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="styles.css?v=25">
+  <link rel="stylesheet" href="styles.css?v=26">
 </head>
 <body>
   <a class="skip" href="#main">Skip to content</a>
@@ -69,10 +69,19 @@
       <svg class="lighthouse" viewBox="0 0 200 160" aria-hidden="true" focusable="false">
         <defs><linearGradient id="beam-fade" x1="1" x2="0"><stop offset="0" stop-color="currentColor" stop-opacity=".55"/><stop offset="1" stop-color="currentColor" stop-opacity="0"/></linearGradient></defs>
         <polygon class="lh-beam" points="165,53 0,14 0,92" fill="url(#beam-fade)"/>
-        <path class="lh-tower" d="M155 148 L175 148 L171 64 L159 64 Z"/>
-        <path class="lh-band" d="M156.6 120 L173.4 120 L172.7 106 L157.3 106 Z M158 92 L172 92 L171.4 78 L158.6 78 Z"/>
-        <rect class="lh-lamp" x="158" y="47" width="14" height="13" rx="2"/>
-        <path class="lh-roof" d="M155 48 L175 48 L165 37 Z"/>
+        <clipPath id="lh-clip"><path d="M153 146 L158 66 L172 66 L177 146 Z"/></clipPath>
+        <g clip-path="url(#lh-clip)">
+          <rect class="lh-tower" x="150" y="60" width="30" height="90"/>
+          <rect class="lh-band" x="150" y="98" width="30" height="16"/>
+          <rect class="lh-band" x="150" y="66" width="30" height="6"/>
+          <rect class="lh-shade" x="165" y="60" width="15" height="90"/>
+        </g>
+        <rect class="lh-window" x="163.5" y="80" width="3" height="8" rx="1.5"/>
+        <path class="lh-window" d="M162 146 v-8 a3 3 0 0 1 6 0 v8 Z"/>
+        <rect class="lh-gallery" x="152" y="61" width="26" height="5" rx="2.5"/>
+        <rect class="lh-lamp" x="158.5" y="46" width="13" height="15" rx="3"/>
+        <path class="lh-roof" d="M155.5 47 a9.5 9.5 0 0 1 19 0 Z"/>
+        <circle class="lh-roof" cx="165" cy="35.5" r="2"/>
         <path class="lh-wave" d="M120 152 C130 147 140 157 150 152 S170 147 180 152 S195 157 200 152"/>
       </svg>
     </section>
