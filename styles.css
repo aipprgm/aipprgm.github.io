@@ -287,7 +287,7 @@ dialog::backdrop { background: rgba(20, 26, 28, .45); }
   .menu-btn span { display: none; }
   .brand { font-size: .95rem; }
 }
-@media (min-width: 861px) { .mobile-menu { display: none; } }
+@media (min-width: 1001px) { .mobile-menu { display: none; } }
 
 /* Live sheet numbers */
 .live { display: inline-flex; align-items: center; gap: 6px; color: var(--spruce); font-weight: 600; }
