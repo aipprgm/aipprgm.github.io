@@ -323,8 +323,27 @@ function setStage(i, save = true, scroll = true) {
     (n ? `<div class="next"><p class="label">Up next</p><h3>${esc(n.title)}</h3><p>${esc(n.text)}</p>${linkHtml(n.links)}</div>`
        : `<div class="next"><p class="label">Done</p><h3>You made it</h3><p>Share your timeline in the data sheet to help the next applicant.</p>${linkHtml([["AIP data sheet", "#res-aip-sheet"]])}</div>`);
   if (save) store.set("stage", i);
+  seaLevel();
   if (scroll) $$(".stop", stopsEl)[i].scrollIntoView({ block: "nearest", inline: "center", behavior: save ? "smooth" : "auto" });
 }
+// The route line is wavy, so its height differs at each stage. Find where the
+// line is under the ship (drawn 34px left of the current stop's centre) and
+// set --sea on that list item so the ship, waves and wake sit on the line.
+const routePath = $("#route-path");
+function seaLevel() {
+  $$(".stops li", stopsEl).forEach((li) => li.style.removeProperty("--sea"));
+  const b = $('.stop[aria-checked="true"]', stopsEl), ctm = routePath.getScreenCTM && routePath.getScreenCTM();
+  if (!b || !ctm) return;
+  const r = b.getBoundingClientRect(), x = r.left + r.width / 2 - 34, L = routePath.getTotalLength();
+  let best = null;
+  for (let k = 0; k <= 200; k++) {
+    const p = routePath.getPointAtLength(L * k / 200), s = new DOMPoint(p.x, p.y).matrixTransform(ctm);
+    if (!best || Math.abs(s.x - x) < Math.abs(best.x - x)) best = s;
+  }
+  b.parentElement.style.setProperty("--sea", `${Math.round(best.y - (r.top + 19))}px`);
+}
+let seaFrame;
+addEventListener("resize", () => { cancelAnimationFrame(seaFrame); seaFrame = requestAnimationFrame(seaLevel); });
 stopsEl.addEventListener("click", (e) => { const b = e.target.closest(".stop"); if (b) setStage(+b.dataset.i); });
 stopsEl.addEventListener("keydown", (e) => {
   if (!["ArrowRight", "ArrowLeft"].includes(e.key)) return;

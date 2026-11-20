@@ -499,7 +499,7 @@ dialog::backdrop { background: rgba(20, 26, 28, .45); }
 /* ---------- Design signature: ferry route ---------- */
 /* The journey line is a sea crossing; a ship marks your current stage. */
 .stop[aria-checked="true"]::after {
-  content: ""; position: absolute; top: -4px; left: calc(50% - 56px); width: 44px; height: 26px;
+  content: ""; position: absolute; top: calc(-4px + var(--sea, 0px)); left: calc(50% - 56px); width: 44px; height: 26px;
   background: var(--harbour);
   mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 24'%3E%3Cpath d='M1 15h35l3-3-4 11H5z'/%3E%3Cpath d='M7 14V10h22v4z'/%3E%3Cpath d='M11 9V6h12v3z'/%3E%3Cpath d='M24 9V3.5h4V9z'/%3E%3Cpath d='M15 5.5V1h1.4v4.5z'/%3E%3C/svg%3E") center / contain no-repeat;
   animation: bob 2.4s ease-in-out infinite;
@@ -507,7 +507,7 @@ dialog::backdrop { background: rgba(20, 26, 28, .45); }
 @keyframes bob { 0%, 100% { translate: 0 0; rotate: -2deg; } 50% { translate: 0 -2px; rotate: 2deg; } }
 /* Waves roll under the ship's hull so it sits in the water */
 .stop[aria-checked="true"]::before {
-  content: ""; position: absolute; z-index: 1; top: 14px; left: calc(50% - 66px); width: 64px; height: 10px;
+  content: ""; position: absolute; z-index: 1; top: calc(14px + var(--sea, 0px)); left: calc(50% - 66px); width: 64px; height: 10px;
   background: color-mix(in srgb, var(--harbour) 75%, var(--paper));
   mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 10'%3E%3Cpath d='M0 4 Q4 0 8 4 T16 4 V10 H0Z'/%3E%3C/svg%3E") 0 0 / 16px 10px repeat-x;
   animation: roll 1.6s linear infinite;
@@ -517,7 +517,7 @@ dialog::backdrop { background: rgba(20, 26, 28, .45); }
    the stop's own ::before and ::after are taken by the waves and the ship. */
 .stops li { position: relative; }
 .stops li:has(> .stop[aria-checked="true"])::before {
-  content: ""; position: absolute; top: 9px; left: calc(50% - 112px); width: 62px; height: 16px; pointer-events: none;
+  content: ""; position: absolute; top: calc(9px + var(--sea, 0px)); left: calc(50% - 112px); width: 62px; height: 16px; pointer-events: none;
   background: linear-gradient(90deg, transparent, color-mix(in srgb, var(--ink) 70%, transparent));
   mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 60 16'%3E%3Cpath d='M60 8 Q30 6 0 1 M60 8 Q30 10 0 15 M50 8 Q30 7.5 14 6 M50 8 Q30 8.5 14 10' stroke='%23000' stroke-width='1.6' fill='none' stroke-linecap='round'/%3E%3C/svg%3E") center / 100% 100% no-repeat;
   animation: wake 2.4s ease-in-out infinite;
