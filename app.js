@@ -568,6 +568,7 @@ function renderTracker(st) {
     ? st.moved.map((m) => `<li><strong>${m.count}</strong>${MOVED_NAMES[m.stage][m.count === 1 ? 0 : 1]}<span>To members who applied ${fmtMonth(m.from) === fmtMonth(m.to) ? fmtMonth(m.from) : `${fmtMonth(m.from)} – ${fmtMonth(m.to)}`}</span></li>`).join("")
     : '<li class="muted">No new dates reported in the last 7 days.</li>';
 
+  renderTide(st);
   const pctCell = (n, of) => { const p = Math.round((n / of) * 100); return `<td class="pct" style="--p:${p}%">${p}%</td>`; };
   $("#cohorts").innerHTML = `<caption class="sr-only">Share of members who reached each stage, by month applied</caption>
     <thead><tr><th scope="col">Applied</th><th scope="col">Members</th><th scope="col">AOR</th><th scope="col">ADR</th><th scope="col">PAL</th><th scope="col">Final decision</th><th scope="col">P1</th><th scope="col">P2</th><th scope="col">eCOPR</th></tr></thead>
@@ -583,6 +584,23 @@ function renderTracker(st) {
   $("#tracker-status").textContent = `Updated at ${time} · refreshes every 10 minutes while this page is open.`;
   $("#tracker-tools").hidden = false;
   $("#cohort-box").hidden = !st.cohorts.length;
+}
+// Optional tide view: the last 12 weeks of reported dates drawn as a tide line, high tide meaning a busy week.
+function renderTide(st) {
+  if (!st.daily) return;
+  const wk = Array.from({ length: 12 }, (_, i) => st.daily.slice(i * 7, i * 7 + 7).reduce((a, b) => a + b, 0));
+  const max = Math.max(...wk, 1), W = 480, H = 150, x = (i) => 20 + (i * (W - 40)) / 11, y = (v) => H - 12 - (v / max) * (H - 50);
+  let p = `M${x(0)},${y(wk[0])}`;
+  for (let i = 1; i < 12; i++) { const cx = (x(i - 1) + x(i)) / 2; p += ` C${cx},${y(wk[i - 1])} ${cx},${y(wk[i])} ${x(i)},${y(wk[i])}`; }
+  const now = wk[11], avg = Math.round(wk.slice(0, 11).reduce((a, b) => a + b, 0) / 11);
+  const level = now >= avg * 1.25 ? "High tide" : now <= avg * 0.75 ? "Low tide" : "Mid tide";
+  $("#tide-svg").innerHTML = `<path class="shore" d="M0,${H} L0,${H - 6} L${W},${H - 6} L${W},${H} Z"/><path class="sea" d="${p} L${x(11)},${H - 6} L${x(0)},${H - 6} Z"/><path class="crest" d="${p}"/><circle class="mark" cx="${x(11)}" cy="${y(now)}" r="6"/>`;
+  $("#tide-sum").innerHTML = `<strong>${level}.</strong> ${now} new dates reported in the last 7 days, against a usual ${avg} a week over the 11 weeks before. The peak was ${max} in a week.`;
+}
+{
+  const tv = $("#tide-view");
+  tv.open = store.get("tide-open") === "1";
+  tv.addEventListener("toggle", () => store.set("tide-open", tv.open ? "1" : "0"));
 }
 SECTIONS.push({ title: "Your place in the queue (IRCC plus Data Sheet)", desc: "People ahead, months left and a combined estimate", href: "#queue",
   keys: "queue people ahead line position months left ircc processing time official 26 months waiting" });
