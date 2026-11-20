@@ -400,15 +400,8 @@ dialog::backdrop { background: rgba(20, 26, 28, .45); }
 }
 @media (max-width: 760px) { .lighthouse { display: none; } }
 
-/* Journey: the beam lights your current stop; finished stops get a stamp ring */
+/* Journey: finished stops get a stamp ring */
 .stop { position: relative; isolation: isolate; }
-.stop[aria-checked="true"]::before {
-  content: ""; position: absolute; z-index: -1; top: 0; left: 50%; width: 64px; height: 36px; translate: -50% 0;
-  clip-path: polygon(44% 0, 56% 0, 100% 100%, 0 100%);
-  background: linear-gradient(to bottom, transparent, color-mix(in srgb, #f2c14e 55%, transparent));
-  animation: glow 3.2s ease-in-out infinite;
-}
-@keyframes glow { 50% { opacity: .55; } }
 .stop.done .dot { outline: 1.5px dashed var(--spruce); outline-offset: 2px; }
 
 /* Checklists: a ticked item gets a tilted "Ready" passport stamp */
@@ -425,7 +418,7 @@ dialog::backdrop { background: rgba(20, 26, 28, .45); }
 @keyframes stamp { from { scale: 1.7; opacity: 0; } }
 
 @media (prefers-reduced-motion: reduce) {
-  .lh-beam, .lh-lamp, .stop[aria-checked="true"]::before, .checklist label:has(input:checked)::after { animation: none; }
+  .lh-beam, .lh-lamp, .checklist label:has(input:checked)::after { animation: none; }
 }
 @media print {
   .lighthouse { display: none; }
