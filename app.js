@@ -319,7 +319,7 @@ function setStage(i, save = true, scroll = true) {
   done.style.setProperty("--off", len * (1 - (i + 0.5) / STAGES.length));
   const s = STAGES[i], n = STAGES[i + 1];
   card.classList.remove("swap"); void card.offsetWidth; card.classList.add("swap");
-  card.innerHTML = `<div><p class="label">You are here · ${i + 1} of ${STAGES.length}</p><h3>${esc(s.title)}</h3><p>${esc(s.text)}</p>${statHtml(s)}${linkHtml(s.links)}</div>` +
+  card.innerHTML = `<div><p class="label">You are here · ${i + 1} of ${STAGES.length}</p><h3>${esc(s.title)}</h3><p>${esc(s.text)}</p>${statHtml(s)}${linkHtml(s.links)}<button class="pc-share" type="button" data-postcard>Make a progress postcard</button></div>` +
     (n ? `<div class="next"><p class="label">Up next</p><h3>${esc(n.title)}</h3><p>${esc(n.text)}</p>${linkHtml(n.links)}</div>`
        : `<div class="next"><p class="label">Done</p><h3>You made it</h3><p>Share your timeline in the data sheet to help the next applicant.</p>${linkHtml([["AIP data sheet", "#res-aip-sheet"]])}</div>`);
   if (save) store.set("stage", i);
@@ -766,3 +766,50 @@ SECTIONS.push({ title: "Expiry radar", desc: "Work permit, passport, language te
 }
 SECTIONS.push({ title: "IRCC letter decoder", desc: "Paste an IRCC email to see what it means and what to do next", href: "#tools",
   keys: "letter email decoder decode meaning what does it mean ircc message portal procedural fairness refusal medical biometrics pal adr copr" });
+
+/* ---------- Progress postcard: drawn on a canvas in the browser, then shared or downloaded ---------- */
+{
+  const LEAF = "M16 2 18 6 20 5 19.5 11 23 8 24 10 28 9 26.5 13 28 14 22.5 19 23.5 21.5 17 20.5 17 27 15 27 15 20.5 8.5 21.5 9.5 19 4 14 5.5 13 4 9 8 10 9 8 12.5 11 12 5 14 6Z";
+  const MON = "JAN FEB MAR APR MAY JUN JUL AUG SEP OCT NOV DEC".split(" ");
+  function draw() {
+    const W = 1200, H = 630, c = document.createElement("canvas"); c.width = W; c.height = H;
+    const g = c.getContext("2d"), serif = "Literata, Georgia, serif", sans = "-apple-system, 'Segoe UI', Roboto, Arial, sans-serif";
+    const ink = "#1f2a30", spruce = "#2f5d50", buoy = "#a8402c", muted = "#55626a", n = STAGES.length, s = STAGES[stage];
+    g.fillStyle = "#f6f4ee"; g.fillRect(0, 0, W, H);
+    g.strokeStyle = "#c9c1ae"; g.setLineDash([10, 8]); g.lineWidth = 3; g.strokeRect(24, 24, W - 48, H - 48); g.setLineDash([]);
+    g.fillStyle = muted; g.font = `600 26px ${sans}`; g.fillText("GREETINGS FROM THE AIP ROUTE", 70, 100);
+    g.fillStyle = ink; g.font = `600 78px ${serif}`; g.fillText(s.short.replace(" (optional)", ""), 70, 190);
+    g.font = `400 32px ${sans}`; g.fillStyle = muted; g.fillText(`Stage ${stage + 1} of ${n} · ${where === "inland" ? "Inside Canada" : "Outside Canada"}`, 70, 245);
+    const from = store.get("est-base") === "Applied" && store.get("est-date") ? Math.floor(Date.parse(store.get("est-date")) / 864e5) : null;
+    if (from !== null) { const d = Math.floor(Date.now() / 864e5) - from; if (d >= 0) { g.fillStyle = spruce; g.font = `600 34px ${sans}`; g.fillText(`Day ${d} since I applied`, 70, 300); } }
+    // Route: a wavy line with a dot per stage; done stages in spruce, the current one in buoy red.
+    const x0 = 90, x1 = W - 90, y = 440, xs = (i) => x0 + ((x1 - x0) * i) / (n - 1), yy = (x) => y + Math.sin((x - x0) / 95) * 18;
+    g.lineWidth = 6; g.lineCap = "round";
+    for (const [to, col] of [[n - 1, "#ddd8cc"], [stage, spruce]]) { g.strokeStyle = col; g.beginPath();
+      for (let x = x0; x <= xs(to); x += 4) x === x0 ? g.moveTo(x, yy(x)) : g.lineTo(x, yy(x)); g.stroke(); }
+    STAGES.forEach((_, i) => { g.beginPath(); g.arc(xs(i), yy(xs(i)), i === stage ? 15 : 9, 0, 7);
+      g.fillStyle = i === stage ? buoy : i < stage ? spruce : "#fffdf8"; g.fill(); g.lineWidth = 4; g.strokeStyle = i <= stage ? (i === stage ? buoy : spruce) : "#c9c1ae"; g.stroke(); });
+    g.fillStyle = ink; g.font = `600 22px ${sans}`; g.textAlign = "center";
+    g.fillText(s.short.replace(" (optional)", ""), Math.min(Math.max(xs(stage), 140), W - 140), yy(xs(stage)) + 52);
+    // Stamp with the maple leaf, and a postmark with today's date.
+    g.textAlign = "left"; g.fillStyle = "#fffdf8"; g.fillRect(W - 230, 60, 150, 180); g.strokeStyle = buoy; g.lineWidth = 3; g.setLineDash([6, 5]); g.strokeRect(W - 230, 60, 150, 180); g.setLineDash([]);
+    g.save(); g.translate(W - 197, 80); g.scale(2.6, 2.6); g.fillStyle = buoy; g.fill(new Path2D(LEAF)); g.restore();
+    g.fillStyle = buoy; g.font = `700 20px ${sans}`; g.textAlign = "center"; g.fillText("CANADA", W - 155, 222);
+    const t = new Date(); g.strokeStyle = "rgba(43,76,111,.55)"; g.lineWidth = 3; g.beginPath(); g.arc(W - 300, 200, 58, 0, 7); g.stroke();
+    g.fillStyle = "rgba(43,76,111,.7)"; g.font = `700 17px ${sans}`; g.fillText("AIP HUB", W - 300, 194); g.fillText(`${t.getDate()} ${MON[t.getMonth()]} ${t.getFullYear()}`, W - 300, 218);
+    g.textAlign = "left"; g.fillStyle = muted; g.font = `400 24px ${sans}`; g.fillText("aipprgm.github.io · AIP Applicant Hub", 70, H - 64);
+    return c;
+  }
+  card.addEventListener("click", async (e) => {
+    if (!e.target.closest("[data-postcard]") || stage === null) return;
+    const blob = await new Promise((r) => draw().toBlob(r, "image/png"));
+    const file = new File([blob], "aip-progress-postcard.png", { type: "image/png" });
+    if (navigator.canShare && navigator.canShare({ files: [file] })) {
+      try { await navigator.share({ files: [file], text: "My AIP progress, via aipprgm.github.io" }); return; } catch (err) { if (err.name === "AbortError") return; }
+    }
+    const a = document.createElement("a"); a.href = URL.createObjectURL(blob); a.download = file.name; a.click();
+    setTimeout(() => URL.revokeObjectURL(a.href), 1000);
+  });
+}
+SECTIONS.push({ title: "Progress postcard", desc: "Make an image of your stage to share with the group", href: "#journey",
+  keys: "share postcard image picture progress whatsapp stage" });

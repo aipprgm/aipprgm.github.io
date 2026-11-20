@@ -554,3 +554,8 @@ dialog::backdrop { background: rgba(20, 26, 28, .45); }
 .dec-card h4 { margin: 0 0 4px; font: 600 1rem Literata, Georgia, serif; }
 .dec-card p { margin: 4px 0 0; }
 .dec-card .when { font-weight: 600; }
+
+/* Progress postcard button in the stage card */
+.pc-share { margin-top: 12px; background: none; border: 1px dashed var(--buoy); color: var(--buoy); border-radius: 6px; padding: 6px 12px; font: 600 .9rem/1.4 inherit; font-family: inherit; cursor: pointer; }
+.pc-share::before { content: "✉ "; }
+.pc-share:hover { background: color-mix(in srgb, var(--buoy) 10%, transparent); }
