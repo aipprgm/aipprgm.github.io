@@ -616,7 +616,7 @@ document.addEventListener("visibilitychange", () => { if (!document.hidden && Da
   const needle = document.querySelector(".compass .needle");
   let rot = 0, back;
   if (needle) document.addEventListener("click", (e) => {
-    const a = e.target.closest('a[href^="#"]'), t = a && document.querySelector(a.getAttribute("href"));
+    const a = e.target.closest('a[href^="#"]'), t = a && document.getElementById(a.getAttribute("href").slice(1));
     if (!t || matchMedia("(prefers-reduced-motion: reduce)").matches) return;
     const c = needle.ownerSVGElement.getBoundingClientRect(), r = t.getBoundingClientRect();
     const deg = Math.atan2(r.left + 40 - (c.left + c.width / 2), -(r.top - (c.top + c.height / 2))) * 180 / Math.PI;
