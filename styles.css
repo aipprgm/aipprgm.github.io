@@ -255,7 +255,8 @@ dialog::backdrop { background: rgba(20, 26, 28, .45); }
 /* Logo: maple leaf over waves, coloured from the theme so it has light and dark versions. */
 .brand .logo { width: 28px; height: 28px; }
 .logo .leaf { fill: var(--buoy); stroke: none; }
-.logo .wave { fill: none; stroke: var(--spruce); stroke-width: 2.2; }
+.logo .wheel { fill: none; stroke: var(--spruce); stroke-width: 2; }
+.logo .knob { fill: var(--spruce); stroke: none; }
 .stop { max-width: 120px; }
 
 /* Optional journey stop (ADR): dashed ring */
