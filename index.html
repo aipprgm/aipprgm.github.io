@@ -150,6 +150,10 @@
           </fieldset>
           <label for="est-date" class="field-label">Date</label>
           <input type="date" id="est-date">
+          <div id="est-applied-row" hidden>
+            <label for="est-applied" class="field-label">The date I applied (optional, gives a better estimate)</label>
+            <input type="date" id="est-applied">
+          </div>
           <ol class="est" id="est-out" aria-live="polite"></ol>
         </div>
         <div class="panel">
@@ -424,6 +428,6 @@
   </dialog>
 
   <script src="stats.js?v=22"></script>
-  <script src="app.js?v=26"></script>
+  <script src="app.js?v=27"></script>
 </body>
 </html>

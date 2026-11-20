@@ -523,31 +523,44 @@ function renderQueue(st) {
 let trackerBound = false;
 function renderTracker(st) {
   const base = () => $('input[name="est-base"]:checked').value;
-  const estDate = $("#est-date"), out = $("#est-out");
+  const estDate = $("#est-date"), estApplied = $("#est-applied"), out = $("#est-out");
+  const dayOf = (input) => (input.value ? Math.floor(Date.parse(input.value) / DAY_MS) : null);
   function estimate() {
     const st = STATS;
-    store.set("est-base", base()); store.set("est-date", estDate.value);
-    markCohort();
-    if (!estDate.value) { out.innerHTML = '<li class="muted">Pick a date to see estimates.</li>'; return; }
-    const from = Math.floor(Date.parse(estDate.value) / DAY_MS);
+    store.set("est-base", base()); store.set("est-date", estDate.value); store.set("est-applied", estApplied.value);
+    $("#est-applied-row").hidden = base() !== "AOR";
+    const entered = dayOf(estDate);
+    // AOR dates vary a lot (some arrive in 2 months, some in a year), while IRCC works through files roughly
+    // in the order they were sent. So when an AOR reader also gives their application date, every range is
+    // counted from the application date. Without it, the application date is guessed from the typical wait.
+    const knownApplied = base() === "AOR" ? dayOf(estApplied) : entered;
+    const applied = knownApplied ?? (entered === null ? null : entered - (st.steps["Applied>AOR"]?.median || 0));
+    const key = knownApplied !== null ? "Applied" : base(); // which group times to use
+    const from = key === "Applied" ? applied : entered;
+    markCohort(knownApplied);
+    if (entered === null) { out.innerHTML = '<li class="muted">Pick a date to see estimates.</li>'; return; }
     if (queueSet) {
-      const d = new Date((base() === "Applied" ? from : from - (st.steps["Applied>AOR"]?.median || 0)) * DAY_MS);
+      const d = new Date(applied * DAY_MS);
       queueSet(`${d.getUTCFullYear()}-${String(d.getUTCMonth() + 1).padStart(2, "0")}`);
     }
     // Buffer: group data leans fast, because members who wait longest often stop updating the sheet.
     // So the late end of each range is stretched by `stretch`: IRCC's own estimate for the application
     // month divided by the group's typical total, and never less than BUFFER_MIN.
-    const applied = base() === "Applied" ? from : from - (st.steps["Applied>AOR"]?.median || 0);
     const official = irccMonth(applied);
-    const total = st.steps[`${base()}>eCOPR`]?.median; // group's typical time from the date entered to eCOPR
+    const total = st.steps[`${key}>eCOPR`]?.median; // group's typical time from the anchor date to eCOPR
     const stretch = Math.max(BUFFER_MIN, official?.finish && total ? (official.finish - from) / total : 0);
+    const guessNote = base() === "AOR" && knownApplied === null
+      ? '<li class="muted"><span>AOR dates vary a lot. Add the date you applied for a better estimate.</span></li>' : "";
     const head = official ? `<li class="official"><strong>IRCC's estimate for ${fmtMonth(applied)} applications</strong><span>${
       official.left !== null ? `About ${official.left} months left as of ${fmtDay(st.ircc.updated)}, so around ${fmtMonth(official.finish)}.`
         : "IRCC says it needs more time on applications from this month."}${official.ahead ? ` About ${official.ahead.toLocaleString("en-CA")} people ahead.` : ""}</span></li>` : "";
-    out.innerHTML = head + EST_TARGETS[base()].map((t) => {
-      const s = st.steps[`${base()}>${t}`];
+    out.innerHTML = guessNote + head + EST_TARGETS[base()].map((t) => {
+      const s = st.steps[`${key}>${t}`];
       if (!s) return "";
-      const lo = from + s.low, mid = from + s.median, hi = from + Math.max(s.high, Math.round(s.median * stretch));
+      // Nothing after AOR can come before the AOR date the reader entered.
+      const floor = base() === "AOR" ? entered : -Infinity;
+      const lo = Math.max(floor, from + s.low), mid = Math.max(floor, from + s.median);
+      const hi = Math.max(floor, from + Math.max(s.high, Math.round(s.median * stretch)));
       const late = hi < st.today;
       const note = late ? "Past the usual range, even with the buffer. Check with the group."
         : mid < st.today ? "You're in the usual window now." : `Most likely around ${fmtDay(mid)}.`;
@@ -560,8 +573,10 @@ function renderTracker(st) {
     const savedBase = store.get("est-base");
     if (savedBase) $$('input[name="est-base"]').forEach((r) => { r.checked = r.value === savedBase; });
     estDate.value = store.get("est-date") || "";
+    estApplied.value = store.get("est-applied") || "";
     $$('input[name="est-base"]').forEach((r) => r.addEventListener("change", estimate));
     estDate.addEventListener("input", estimate);
+    estApplied.addEventListener("input", estimate);
   }
 
   $("#moved").innerHTML = st.moved.length
@@ -573,8 +588,8 @@ function renderTracker(st) {
   $("#cohorts").innerHTML = `<caption class="sr-only">Share of members who reached each stage, by month applied</caption>
     <thead><tr><th scope="col">Applied</th><th scope="col">Members</th><th scope="col">AOR</th><th scope="col">ADR</th><th scope="col">PAL</th><th scope="col">Final decision</th><th scope="col">P1</th><th scope="col">P2</th><th scope="col">eCOPR</th></tr></thead>
     <tbody>${st.cohorts.map((c) => `<tr data-k="${c.year * 12 + c.month}"><th scope="row">${new Date(Date.UTC(c.year, c.month)).toLocaleDateString("en-CA", { timeZone: "UTC", month: "short", year: "numeric" })}</th><td>${c.n}</td>${pctCell(c.AOR, c.n)}${pctCell(c.ADR, c.n)}${pctCell(c.PAL, c.n)}${pctCell(c.FD, c.n)}${pctCell(c.P1, c.n)}${pctCell(c.P2, c.n)}${pctCell(c.eCOPR, c.n)}</tr>`).join("")}</tbody>`;
-  function markCohort() {
-    const d = base() === "Applied" && estDate.value ? new Date(estDate.value) : null;
+  function markCohort(appliedDay) {
+    const d = appliedDay != null ? new Date(appliedDay * DAY_MS) : null;
     const k = d ? d.getUTCFullYear() * 12 + d.getUTCMonth() : -1;
     $$("#cohorts tbody tr").forEach((tr) => tr.classList.toggle("mine", +tr.dataset.k === k));
   }
