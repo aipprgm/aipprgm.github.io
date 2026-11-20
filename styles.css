@@ -542,5 +542,15 @@ dialog::backdrop { background: rgba(20, 26, 28, .45); }
 .radar { margin-top: 30px; }
 .radar li.soon { border-color: #c98a1b; }
 .radar-actions { margin: 16px 0 0; }
-#radar-panel { grid-column: 1 / -1; }
+#radar-panel, #decoder-panel { grid-column: 1 / -1; }
 @media (max-width: 640px) { .radar-fields { grid-template-columns: 1fr; } }
+
+/* IRCC letter decoder */
+#dec-in { width: 100%; padding: 10px 12px; border: 1px solid var(--line); border-radius: 6px; background: var(--paper); color: var(--ink); font: inherit; resize: vertical; }
+.decoded { display: grid; gap: 10px; margin-top: 14px; }
+.decoded:empty { display: none; }
+.dec-card { border-left: 3px solid var(--harbour); background: var(--sand); padding: 10px 14px; border-radius: 0 6px 6px 0; }
+.dec-card.warn { border-color: var(--buoy); }
+.dec-card h4 { margin: 0 0 4px; font: 600 1rem Literata, Georgia, serif; }
+.dec-card p { margin: 4px 0 0; }
+.dec-card .when { font-weight: 600; }

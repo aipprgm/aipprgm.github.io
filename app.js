@@ -699,3 +699,70 @@ document.addEventListener("visibilitychange", () => { if (!document.hidden && Da
 }
 SECTIONS.push({ title: "Expiry radar", desc: "Work permit, passport, language test and endorsement dates, with calendar reminders", href: "#tools",
   keys: "expiry expire expires renew renewal reminder calendar passport work permit language test endorsement deadline radar dates" });
+
+/* ---------- IRCC letter decoder: pattern matching in the browser, nothing is sent ---------- */
+{
+  const R = [
+    { re: /procedural fairness/i, warn: true, name: "Procedural fairness letter",
+      what: "IRCC has a concern that could lead to a refusal, and is giving you a chance to answer it.",
+      next: "Reply by the deadline with everything it asks for and a clear explanation. Many members get help from a licensed consultant or lawyer.", href: "#community" },
+    { re: /\brefus(ed|al)\b|unable to approve|does not meet the requirements/i, warn: true, name: "Refusal",
+      what: "IRCC has refused the application named in the letter.",
+      next: "Read the reasons closely. Ask the group about reconsideration or reapplying. If it's a work permit, check your status straight away.", href: "#community" },
+    { re: /acknowledg(e)?ment of receipt|we (have )?received your application/i, name: "Acknowledgement of Receipt (AOR)",
+      what: "IRCC has your application and has started processing it.",
+      next: "Save your application number. Add your AOR date to the group's data sheet, then watch your account; there's no AIP status tracker.", href: "#journey" },
+    { re: /medical (exam|examination|instructions|request)|panel physician|upfront medical/i, name: "Medical exam request",
+      what: "IRCC wants you, and any family members listed, to have an immigration medical exam.",
+      next: "Book with an IRCC panel physician. The letter gives the deadline, often 30 days.", href: "#journey" },
+    { re: /biometric/i, name: "Biometrics instruction letter",
+      what: "IRCC wants your fingerprints and photo, unless you gave them in the last 10 years.",
+      next: "Book a biometrics appointment and bring the letter. The letter gives the deadline, often 30 days.", href: "#journey" },
+    { re: /pre-?arrival|settlement services/i, name: "Pre-Arrival Letter (PAL)",
+      what: "An invitation to free settlement services. Your PR file is still being processed.",
+      next: "Nothing to send. Add the date to the data sheet; the group often sees this after eligibility checks.", href: "#journey" },
+    { re: /additional (documents?|information)|submit the following|request for (documents?|information)|document request|please provide/i, name: "Additional Document Request (ADR)",
+      what: "IRCC needs updated or missing documents for your file.",
+      next: "Send exactly what the letter lists, through the portal, by its deadline.", href: "#adr" },
+    { re: /final decision|decision (has been|was) made|approved in principle/i, name: "Final decision",
+      what: "IRCC has finished reviewing your PR application.",
+      next: "Inside Canada, watch for the PR portal invitation. Outside Canada, watch for the passport request.", href: "#journey" },
+    { re: /physically (present )?in canada|permanent residence portal|pr portal|portal 1/i, name: "PR portal (Portal 1)",
+      what: "IRCC is asking you to confirm you're in Canada so you can land virtually.",
+      next: "Confirm in the portal as soon as you can. The Portal 2 request for your photo and address follows.", href: "#journey" },
+    { re: /portal 2|(upload|submit) (a |your )?(digital )?photo|mailing address/i, name: "PR portal (Portal 2)",
+      what: "IRCC wants your photo and mailing address for your PR card.",
+      next: "Upload a photo that meets IRCC's specs and confirm your address.", href: "#journey" },
+    { re: /confirmation of permanent residence|\be?copr\b/i, name: "Confirmation of Permanent Residence",
+      what: "You are, or are about to become, a permanent resident.",
+      next: "Inside Canada, the eCOPR is your landing. Check every detail and report errors to IRCC. Welcome!", href: "#journey" },
+    { re: /passport request|submit your passport|ready for visa/i, name: "Passport request (PPR)",
+      what: "IRCC is ready to put your visa or COPR in your passport.",
+      next: "Follow the letter's instructions for sending your passport, by its deadline.", href: "#journey" },
+    { re: /work permit.{0,60}(approved|issued)|letter of introduction/i, name: "Work permit approval",
+      what: "Your work permit has been approved.",
+      next: "Inside Canada it's mailed or added to your account; outside, show the letter at the border. Check the employer, job and dates.", href: "#c18" },
+  ];
+  const WORDS = { thirty: 30, sixty: 60, ninety: 90, fifteen: 15, "forty-five": 45, seven: 7, ten: 10, fourteen: 14 };
+  const out = $("#dec-out"), inp = $("#dec-in");
+  const deadline = (t) => {
+    const m = /within\s+(\d{1,3}|thirty|sixty|ninety|fifteen|forty-five|seven|ten|fourteen)\s*(\(\d+\)\s*)?(calendar\s+)?days/i.exec(t);
+    const dates = t.match(/\b(?:January|February|March|April|May|June|July|August|September|October|November|December)\s+\d{1,2},\s+\d{4}\b|\b\d{4}-\d{2}-\d{2}\b/g) || [];
+    const bits = [];
+    if (m) { const n = +m[1] || WORDS[m[1].toLowerCase()];
+      const d = new Date(); d.setDate(d.getDate() + n);
+      bits.push(`You have <strong>${n} days</strong>, counted from the date on the letter. If that's today, the deadline is ${d.toLocaleDateString("en-CA", { month: "long", day: "numeric", year: "numeric" })}.`); }
+    if (dates.length) bits.push(`Dates in the letter: ${[...new Set(dates)].map(esc).join(", ")}.`);
+    return bits.length ? `<p class="when">${bits.join(" ")}</p>` : "";
+  };
+  inp.addEventListener("input", () => {
+    const t = inp.value.trim();
+    if (t.length < 20) { out.innerHTML = ""; return; }
+    const hits = R.filter((r) => r.re.test(t)).slice(0, 3);
+    out.innerHTML = (hits.length ? hits.map((h) => `<div class="dec-card${h.warn ? " warn" : ""}"><h4>${h.name}</h4><p>${h.what}</p><p><strong>Next:</strong> ${h.next} <a href="${h.href}">More</a></p></div>`).join("")
+      : '<div class="dec-card"><h4>Not sure what this is</h4><p>It doesn\'t match a letter we know. <a href="#community">Ask the group</a>, and remove personal details before sharing.</p></div>')
+      + deadline(t);
+  });
+}
+SECTIONS.push({ title: "IRCC letter decoder", desc: "Paste an IRCC email to see what it means and what to do next", href: "#tools",
+  keys: "letter email decoder decode meaning what does it mean ircc message portal procedural fairness refusal medical biometrics pal adr copr" });
