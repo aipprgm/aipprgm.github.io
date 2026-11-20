@@ -55,6 +55,7 @@
         <li><a href="#adr">What's in an ADR</a></li>
         <li><a href="#job-change">Job changes &amp; 90-day deadline</a></li>
         <li><a href="#my-docs">My document tracker</a></li>
+        <li><a href="#tools">Expiry radar</a></li>
         <li><a href="#resources">Sheets &amp; guides</a></li>
         <li><a href="#files">Files</a></li>
         <li><a href="#community">Ask the group</a></li>
@@ -300,6 +301,26 @@
         <ul class="checklist" id="docs-list"></ul>
         <p class="progress" id="docs-progress" aria-live="polite"></p>
         <p class="docs-actions"><button class="button" id="docs-print">Print this list</button> <button class="link-btn" id="docs-clear">Clear ticks</button></p>
+      </div>
+    </section>
+
+    <!-- Handy tools: expiry radar (dates saved on this device only) -->
+    <section class="wrap section" id="tools" aria-labelledby="tools-title">
+      <h2 id="tools-title" class="section-title">Handy tools</h2>
+      <div class="tool">
+        <div class="panel" id="radar-panel">
+          <h3>Expiry radar</h3>
+          <p class="hint">Enter the dates you know. We'll flag what's coming up and what to do. Saved on this device only.</p>
+          <div class="radar-fields">
+            <label>Work permit expires <input type="date" data-radar="wp"></label>
+            <label>Passport expires <input type="date" data-radar="passport"></label>
+            <label>Language test taken <input type="date" data-radar="lang"></label>
+            <label>Endorsement expires <input type="date" data-radar="endo"></label>
+          </div>
+          <div class="radar-track" id="radar-track" aria-hidden="true" hidden><span class="rt-now">Today</span><span class="rt-end">2 years</span></div>
+          <ol class="est radar" id="radar-out" aria-live="polite"></ol>
+          <p class="radar-actions" id="radar-actions" hidden><button class="button" id="radar-ics">Add reminders to my calendar</button></p>
+        </div>
       </div>
     </section>
 

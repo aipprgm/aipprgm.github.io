@@ -645,3 +645,57 @@ document.addEventListener("visibilitychange", () => { if (!document.hidden && Da
     back = setTimeout(() => { rot = Math.ceil(rot / 360) * 360; needle.style.rotate = rot + "deg"; }, 1400);
   });
 }
+
+/* ---------- Expiry radar: dates stay on this device ---------- */
+{
+  const DAY = 864e5, fields = $$("[data-radar]"), out = $("#radar-out"), track = $("#radar-track");
+  const toDay = (v) => (v ? Math.floor(Date.parse(v) / DAY) : null);
+  const nice = (d) => new Date(d * DAY).toLocaleDateString("en-CA", { timeZone: "UTC", month: "short", day: "numeric", year: "numeric" });
+  const plus2y = (v) => { const d = new Date(v); d.setUTCFullYear(d.getUTCFullYear() + 2); return Math.floor(d / DAY); };
+  let reminders = [];
+  function render() {
+    const v = Object.fromEntries(fields.map((f) => [f.dataset.radar, f.value]));
+    fields.forEach((f) => store.set("radar-" + f.dataset.radar, f.value));
+    const now = Math.floor(Date.now() / DAY), wp = toDay(v.wp), pass = toDay(v.passport);
+    const items = [];
+    if (wp !== null) items.push({ label: "Work permit", end: wp, lead: 120,
+      text: "Ask your employer for a new offer number and the $230 fee about 4 months ahead. If you apply before it expires, from inside Canada, you can keep working while IRCC decides.",
+      remind: [[wp - 120, "Start C18 renewal: ask employer for a new offer number"], [wp - 30, "Last month to apply to renew your C18"]] });
+    if (pass !== null) items.push({ label: "Passport", end: pass, lead: 180,
+      text: (wp !== null && pass < wp + 730 ? "It ends before a full 2-year renewal would. Renew your passport before you apply, or your next permit will be cut short. " : "")
+        + "Your work permit can't be valid past this date.",
+      remind: [[pass - 180, "Renew your passport (it limits your work permit)"]] });
+    if (v.lang) { const e = plus2y(v.lang); items.push({ label: "Language test", end: e, lead: 60,
+      text: "Valid for a first C18 application until this date. Renewals with the same employer don't need it.",
+      remind: [[e - 30, "Language test results expire in 30 days"]] }); }
+    const endo = toDay(v.endo);
+    if (endo !== null) items.push({ label: "Endorsement", end: endo, lead: 60,
+      text: "Apply for PR before this date. After it expires, you'll need your AOR to get or renew a C18.",
+      remind: [[endo - 60, "Endorsement expires in 60 days: has your PR application gone in?"]] });
+    items.sort((a, b) => a.end - b.end);
+    reminders = items.flatMap((i) => [...i.remind, [i.end, `${i.label} expires`]]).filter(([d]) => d >= now);
+    items.forEach((i) => { const left = i.end - now; i.cls = left < 0 ? "late" : left <= i.lead ? "soon" : ""; i.left = left; });
+    out.innerHTML = items.map((i) => `<li class="${i.cls}"><strong>${i.label}: ${i.left < 0 ? `expired ${nice(i.end)}` : `${nice(i.end)} · ${i.left} days left`}</strong><span>${i.text}</span></li>`).join("");
+    track.querySelectorAll(".rt-pin").forEach((e) => e.remove());
+    let prev = -99, lvl = 0; // stack labels that would overlap
+    items.forEach((i) => { const pin = document.createElement("span"), x = Math.min(100, Math.max(0, (i.left / 730) * 100));
+      lvl = x - prev < 14 ? (lvl + 1) % 3 : 0; prev = x;
+      pin.className = "rt-pin " + i.cls; pin.textContent = i.label; pin.style.left = `${x}%`; if (x < 10 || x > 90) pin.style.translate = x < 10 ? "-6px 0" : "calc(-100% + 6px) 0"; pin.style.justifyItems = x < 10 ? "start" : x > 90 ? "end" : ""; pin.style.setProperty("--lvl", lvl); track.append(pin); });
+    track.hidden = !items.length; $("#radar-actions").hidden = !reminders.length;
+  }
+  fields.forEach((f) => { f.value = store.get("radar-" + f.dataset.radar) || ""; f.addEventListener("input", render); });
+  render();
+  // Calendar file: one all-day event per reminder. Built in the browser and downloaded; nothing is uploaded.
+  $("#radar-ics").addEventListener("click", () => {
+    const ymd = (d) => new Date(d * DAY).toISOString().slice(0, 10).replace(/-/g, "");
+    const stamp = new Date().toISOString().replace(/[-:]/g, "").slice(0, 15) + "Z";
+    const ev = reminders.map(([d, t], k) => ["BEGIN:VEVENT", `UID:aip-radar-${d}-${k}@aipprgm.github.io`, `DTSTAMP:${stamp}`,
+      `DTSTART;VALUE=DATE:${ymd(d)}`, `DTEND;VALUE=DATE:${ymd(d + 1)}`, `SUMMARY:${t}`, "DESCRIPTION:From the AIP Applicant Hub expiry radar: https://aipprgm.github.io/#tools", "END:VEVENT"].join("\r\n"));
+    const ics = ["BEGIN:VCALENDAR", "VERSION:2.0", "PRODID:-//AIP Applicant Hub//Expiry radar//EN", ...ev, "END:VCALENDAR"].join("\r\n");
+    const a = document.createElement("a");
+    a.href = URL.createObjectURL(new Blob([ics], { type: "text/calendar" })); a.download = "aip-reminders.ics";
+    a.click(); setTimeout(() => URL.revokeObjectURL(a.href), 1000);
+  });
+}
+SECTIONS.push({ title: "Expiry radar", desc: "Work permit, passport, language test and endorsement dates, with calendar reminders", href: "#tools",
+  keys: "expiry expire expires renew renewal reminder calendar passport work permit language test endorsement deadline radar dates" });
