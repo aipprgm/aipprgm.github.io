@@ -430,3 +430,22 @@ dialog::backdrop { background: rgba(20, 26, 28, .45); }
 @media print {
   .lighthouse { display: none; }
 }
+
+/* ---------- Design signature: boarding-pass stage card ---------- */
+/* "You are here / Up next" reads like a ticket: a perforated tear line,
+   two notches bitten out of the edge, and a barcode on the stub. */
+.stage-card .next {
+  position: relative; border-left: 2px dashed color-mix(in srgb, var(--muted) 55%, transparent);
+  background: repeating-linear-gradient(90deg, var(--ink) 0 2px, transparent 2px 4px, var(--ink) 4px 5px, transparent 5px 8px, var(--ink) 8px 11px, transparent 11px 13px) right 18px top 20px / 52px 14px no-repeat, var(--sand);
+}
+.stage-card .next::before, .stage-card .next::after {
+  content: ""; position: absolute; left: -15px; width: 28px; height: 28px; border-radius: 50%;
+  background: var(--paper); border: 1px solid var(--line);
+}
+.stage-card .next::before { top: -15px; }
+.stage-card .next::after { bottom: -15px; }
+@media (max-width: 640px) {
+  .stage-card .next { border-left: 0; border-top: 2px dashed color-mix(in srgb, var(--muted) 55%, transparent); }
+  .stage-card .next::before { top: -15px; left: -15px; }
+  .stage-card .next::after { top: -15px; bottom: auto; left: auto; right: -15px; }
+}
