@@ -13,7 +13,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Literata:opsz,wght@7..72,500;7..72,600&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="styles.css?v=26">
+  <link rel="stylesheet" href="styles.css?v=27">
 </head>
 <body>
   <a class="skip" href="#main">Skip to content</a>
@@ -331,8 +331,30 @@
   </main>
 
   <footer class="site-footer wrap">
-    <p><strong>Not legal advice.</strong> A community resource run by applicants. Not affiliated with IRCC or any province. Always confirm on <a href="https://www.canada.ca/en/immigration-refugees-citizenship/services/immigrate-canada/atlantic-immigration.html" target="_blank" rel="noopener">canada.ca</a>. Last reviewed 17 November 2026.</p>
-    <p class="footer-links"><a href="#top">Back to top</a> · <button class="link-btn" id="theme-toggle">Switch theme</button></p>
+    <div class="postcard">
+      <div class="pc-message">
+        <p class="pc-greeting">Greetings from Atlantic Canada</p>
+        <p><strong>Not legal advice.</strong> A community resource run by applicants. Not affiliated with IRCC or any province. Always confirm on <a href="https://www.canada.ca/en/immigration-refugees-citizenship/services/immigrate-canada/atlantic-immigration.html" target="_blank" rel="noopener">canada.ca</a>. Last reviewed 17 November 2026.</p>
+        <p class="footer-links"><a href="#top">Back to top</a> · <button class="link-btn" id="theme-toggle">Switch theme</button></p>
+      </div>
+      <div class="pc-side" aria-hidden="true">
+        <div class="pc-stamp">
+          <svg viewBox="0 0 32 32"><path d="M16 2 18 6 20 5 19.5 11 23 8 24 10 28 9 26.5 13 28 14 22.5 19 23.5 21.5 17 20.5 17 27 15 27 15 20.5 8.5 21.5 9.5 19 4 14 5.5 13 4 9 8 10 9 8 12.5 11 12 5 14 6Z"/></svg>
+          <span>CANADA</span>
+        </div>
+        <svg class="pc-postmark" viewBox="0 0 170 70">
+          <circle cx="35" cy="35" r="30"/>
+          <text x="35" y="31">AIP HUB</text>
+          <text x="35" y="45" id="pm-date">2026</text>
+          <path d="M72 20 q8 -5 16 0 t16 0 t16 0 t16 0 t16 0 t16 0"/>
+          <path d="M72 30 q8 -5 16 0 t16 0 t16 0 t16 0 t16 0 t16 0"/>
+          <path d="M72 40 q8 -5 16 0 t16 0 t16 0 t16 0 t16 0 t16 0"/>
+          <path d="M72 50 q8 -5 16 0 t16 0 t16 0 t16 0 t16 0 t16 0"/>
+        </svg>
+        <p class="pc-to">To: the next applicant</p>
+        <span class="pc-line"></span><span class="pc-line"></span>
+      </div>
+    </div>
   </footer>
 
   <!-- Mobile bottom bar -->
@@ -366,6 +388,6 @@
   </dialog>
 
   <script src="stats.js?v=21"></script>
-  <script src="app.js?v=21"></script>
+  <script src="app.js?v=22"></script>
 </body>
 </html>

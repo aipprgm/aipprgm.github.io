@@ -449,3 +449,30 @@ dialog::backdrop { background: rgba(20, 26, 28, .45); }
   .stage-card .next::before { top: -15px; left: -15px; }
   .stage-card .next::after { top: -15px; bottom: auto; left: auto; right: -15px; }
 }
+
+/* ---------- Design signature: postcard footer ---------- */
+.postcard {
+  display: grid; grid-template-columns: 1fr 230px; gap: 24px; background: var(--surface); border: 1px solid var(--line);
+  border-radius: 6px; padding: 24px; box-shadow: 0 10px 24px -18px rgb(0 0 0 / .45); rotate: -.4deg;
+}
+.pc-greeting { font: italic 600 1.4rem/1.2 Literata, Georgia, serif; color: var(--ink); margin-bottom: 12px !important; }
+.pc-side { position: relative; border-left: 1px solid var(--line); padding: 112px 0 0 22px; }
+.pc-stamp {
+  position: absolute; top: 0; right: 0; width: 66px; height: 80px; padding: 5px; background: var(--sand);
+  display: grid; place-items: center; align-content: center; gap: 2px; rotate: 3deg;
+  mask: radial-gradient(circle 3px, #0000 95%, #000) -4px -4px / 8px 8px round, linear-gradient(#000 0 0) content-box;
+}
+.pc-stamp svg { width: 34px; height: 34px; fill: var(--buoy); }
+.pc-stamp span { font: 700 .55rem/1 ui-monospace, SFMono-Regular, Menlo, monospace; letter-spacing: .12em; color: var(--spruce); }
+.pc-postmark { position: absolute; top: 18px; right: 26px; width: 170px; rotate: -8deg; fill: none; stroke: var(--muted); stroke-width: 1.6; opacity: .75; }
+.pc-postmark text { fill: var(--muted); stroke: none; font: 700 7.5px ui-monospace, SFMono-Regular, Menlo, monospace; letter-spacing: .02em; text-anchor: middle; }
+.pc-to { font: italic .95rem Literata, Georgia, serif; color: var(--ink); border-bottom: 1px solid var(--line); padding-bottom: 4px; margin: 0 0 18px !important; }
+.pc-line { display: block; border-bottom: 1px solid var(--line); height: 1px; margin-bottom: 22px; }
+@media (max-width: 640px) {
+  .postcard { grid-template-columns: 1fr; rotate: none; padding: 20px; }
+  .pc-side { border-left: 0; border-top: 1px dashed var(--line); padding: 112px 0 0; }
+  .pc-stamp { top: 16px; }
+  .pc-postmark { top: 30px; }
+}
+@media print { .postcard { box-shadow: none; rotate: none; } }
+.site-footer { border-top: 0; }

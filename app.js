@@ -603,3 +603,9 @@ function loadStats() {
 loadStats();
 setInterval(() => { if (!document.hidden) loadStats(); }, REFRESH_MS);
 document.addEventListener("visibilitychange", () => { if (!document.hidden && Date.now() - lastLoad > REFRESH_MS) loadStats(); });
+
+// Footer postcard: stamp the postmark with today's date, e.g. "19 NOV 2026"
+{
+  const pm = document.getElementById("pm-date"), d = new Date();
+  if (pm) pm.textContent = `${d.getDate()} ${["JAN","FEB","MAR","APR","MAY","JUN","JUL","AUG","SEP","OCT","NOV","DEC"][d.getMonth()]} ${d.getFullYear()}`;
+}
