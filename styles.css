@@ -385,8 +385,8 @@ dialog::backdrop { background: rgba(20, 26, 28, .45); }
 .lh-lamp { fill: #f2c14e; }
 .lighthouse .lh-wave { fill: none; stroke: var(--spruce); stroke-width: 2.2; }
 #beam-fade stop { stop-color: #f2c14e; }
-.lh-beam { stroke: none; transform-box: view-box; transform-origin: 165px 53px; opacity: .45; animation: sweep 2.8s cubic-bezier(.45,0,.2,1) .3s both, turn 6s ease-in-out 3.1s infinite; }
-.lh-lamp { animation: flash 6s ease-in-out 3.1s infinite; }
+.lh-beam { stroke: none; transform-box: view-box; transform-origin: 165px 53px; opacity: .45; animation: sweep 2.8s cubic-bezier(.45,0,.2,1) .3s both, turn var(--turn, 6s) ease-in-out 3.1s infinite; }
+.lh-lamp { animation: flash var(--turn, 6s) ease-in-out 3.1s infinite; }
 /* After the first sweep, the beam keeps turning: it narrows as it swings toward
    the viewer, the lamp flashes, then the beam widens again. */
 @keyframes turn {
@@ -559,3 +559,9 @@ dialog::backdrop { background: rgba(20, 26, 28, .45); }
 .pc-share { margin-top: 12px; background: none; border: 1px dashed var(--buoy); color: var(--buoy); border-radius: 6px; padding: 6px 12px; font: 600 .9rem/1.4 inherit; font-family: inherit; cursor: pointer; }
 .pc-share::before { content: "✉ "; }
 .pc-share:hover { background: color-mix(in srgb, var(--buoy) 10%, transparent); }
+
+/* Living lighthouse: the beam turns faster on days the group reports new dates */
+.lh-live { display: inline-flex; align-items: center; gap: 8px; margin: 4px 0 0; font-size: .92rem; color: var(--muted); }
+.lh-live::before { content: ""; width: 9px; height: 9px; border-radius: 50%; background: #f2c14e; box-shadow: 0 0 0 0 #f2c14e88; animation: ping var(--turn, 6s) ease-out infinite; }
+@keyframes ping { 0% { box-shadow: 0 0 0 0 #f2c14eaa; } 40%, 100% { box-shadow: 0 0 0 8px #f2c14e00; } }
+@media (prefers-reduced-motion: reduce) { .lh-live::before { animation: none; } }

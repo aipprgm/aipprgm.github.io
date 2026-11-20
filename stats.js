@@ -129,6 +129,12 @@
       return { stage: s, count: hits.length, from: applied[0], to: applied[applied.length - 1] };
     }).filter((m) => m.count > 0);
 
+    // Stage dates reported per day over the last 84 days (index 83 is today), for the lighthouse and weekly views.
+    const daily = Array.from({ length: 84 }, (_, k) => {
+      const d = now - 83 + k;
+      return people.reduce((n, p) => n + STAGES.slice(1).filter((s) => at(p, s) === d).length, 0);
+    });
+
     // Cohorts by month applied. Only tabs with full dates (2025 on); months with at least 5 reports.
     const groups = new Map();
     people.filter((p) => p.tab >= 2025).forEach((p) => {
@@ -163,7 +169,7 @@
       .filter((k) => k.count > 0).sort((a, b) => b.count - a.count);
 
     return {
-      applicants: people.length, today: now, steps, wp, moved, cohorts,
+      applicants: people.length, today: now, steps, wp, moved, daily, cohorts,
       adr: { reports: docs.length, noAdr: docs.length - adrDocs.length, withAdr: adrDocs.length, kinds },
     };
   }

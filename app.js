@@ -589,6 +589,15 @@ SECTIONS.push({ title: "Your place in the queue (IRCC plus Data Sheet)", desc: "
 SECTIONS.push({ title: "Live tracker", desc: "Estimate your dates, see what moved this week and how your month is doing", href: "#tracker",
   keys: "tracker estimate estimator prediction when will i get aor pal fd ecopr how long cohort month this week moved progress" });
 
+/* ---------- Living lighthouse: the hero beam turns faster when members report new dates today ---------- */
+function liveLighthouse(st) {
+  const today = st.daily ? st.daily[st.daily.length - 1] : 0, week = st.daily ? st.daily.slice(-7).reduce((a, b) => a + b, 0) : 0;
+  $(".intro").style.setProperty("--turn", today >= 5 ? "2.4s" : today >= 1 ? "3.6s" : "6s");
+  const live = $("#lh-live");
+  live.textContent = today ? `${today} new date${today === 1 ? "" : "s"} reported in the group today` : week ? `${week} new dates reported in the group this week` : "";
+  live.hidden = !live.textContent;
+}
+
 /* ---------- Live numbers from the community data sheet ---------- */
 // Loads on open, then every 10 minutes while the tab is visible, and when the reader returns to a stale tab.
 const REFRESH_MS = 10 * 60e3;
@@ -600,6 +609,7 @@ function loadStats() {
   const first = !STATS;
   STATS = st; lastLoad = Date.now();
   renderTracker(st);
+  liveLighthouse(st);
   const badge = $("#live-badge");
   badge.textContent = `Live timelines from ${st.applicants} applicants in the group sheet.`;
   badge.hidden = false;
