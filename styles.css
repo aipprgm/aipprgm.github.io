@@ -372,6 +372,7 @@ dialog::backdrop { background: rgba(20, 26, 28, .45); }
 #docs-title { --coord: "SAINT JOHN 45°16′N 66°04′W"; }
 #res-title { --coord: "SYDNEY 46°08′N 60°11′W"; }
 #files-title { --coord: "CORNER BROOK 48°57′N 57°57′W"; }
+#tools-title { --coord: "SUMMERSIDE 46°24′N 63°47′W"; }
 
 /* Lighthouse: sweeps its beam across the hero once on load */
 .intro { position: relative; isolation: isolate; }
